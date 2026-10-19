@@ -1,0 +1,1076 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>IELTS Practice Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+/* Layout: minimal monochrome exam screen — quiet header, generous whitespace, one ink colour, hairline dividers */
+:root{
+  --bg:#FFFFFF; --surface:#FFFFFF; --soft:#F5F6F7; --ink:#15171A; --muted:#71767E; --line:#E8EAED;
+  --accent:#15171A; --on-accent:#FFFFFF; --ok:#1F7A4D; --ok-soft:#EEF7F2; --bad:#C0392B; --bad-soft:#FCF0EE;
+  --hl:#FDEFA8; --y1:#D3D6DB; --y2:#8D939C; --y3:#15171A;
+  --c-listening:#2F6FD0; --c-reading:#1F8A5B; --c-writing:#C2560C; --c-speaking:#7C4BD6;
+  --f-ui:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-read:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --f-mono:"Geist Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F1012; --surface:#0F1012; --soft:#18191C; --ink:#ECEDEF; --muted:#8E939B; --line:#24262A;
+  --accent:#ECEDEF; --on-accent:#0F1012; --ok:#5BC48A; --ok-soft:#13241A; --bad:#EF7B6E; --bad-soft:#2A1614;
+  --hl:#5A4C12; --y1:#34373C; --y2:#7C828B; --y3:#ECEDEF; --c-listening:#82A9F2; --c-reading:#5BC48A; --c-writing:#F09A62; --c-speaking:#B89BF5; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1012; --surface:#0F1012; --soft:#18191C; --ink:#ECEDEF; --muted:#8E939B; --line:#24262A;
+  --accent:#ECEDEF; --on-accent:#0F1012; --ok:#5BC48A; --ok-soft:#13241A; --bad:#EF7B6E; --bad-soft:#2A1614;
+  --hl:#5A4C12; --y1:#34373C; --y2:#7C828B; --y3:#ECEDEF; --c-listening:#82A9F2; --c-reading:#5BC48A; --c-writing:#F09A62; --c-speaking:#B89BF5; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--f-ui);-webkit-font-smoothing:antialiased;transition:background .2s,color .2s}
+.wrap{max-width:1160px;margin:0 auto;padding-inline:20px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px;padding-block:14px}
+.brand{font-weight:600;font-size:15px;letter-spacing:-.01em}
+.brand small{font-weight:400;color:var(--muted);margin-left:8px;font-size:13px}
+nav.tabs{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap}
+nav.tabs a{padding:6px 12px;border-radius:999px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:500}
+nav.tabs a:hover{color:var(--ink)}
+nav.tabs a[aria-current="page"]{background:var(--soft);color:var(--ink)}
+.theme{width:34px;height:34px;padding:0;display:grid;place-items:center;border-radius:999px}
+.theme svg{width:16px;height:16px}
+.theme .sun{display:none}
+:root[data-theme="dark"] .theme .sun{display:block}
+:root[data-theme="dark"] .theme .moon{display:none}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .theme .sun{display:block}:root:not([data-theme="light"]) .theme .moon{display:none}}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,label.opt:focus-within{outline:2px solid var(--ink);outline-offset:2px}
+
+main{padding-block:40px 72px}
+section.view[hidden]{display:none}
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 24px;margin-bottom:28px}
+.head h1{margin:0;font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.2;text-wrap:balance}
+.eyebrow{font-size:13px;color:var(--muted);margin-bottom:6px}
+.head p{margin:8px 0 0;color:var(--muted);max-width:60ch}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+.timer{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:16px;padding:6px 4px;min-width:64px;text-align:center}
+.timer.low{color:var(--bad)}
+button{font:inherit;font-weight:500;font-size:14px;padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;transition:background .15s,border-color .15s}
+button:hover{background:var(--soft)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+button.primary:hover{opacity:.88;background:var(--accent)}
+button:disabled{opacity:.4;cursor:not-allowed}
+
+.split{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:48px;align-items:start}
+.pane{min-width:0}
+@media (min-width:900px){.split .pane{max-height:calc(100vh - 150px);overflow:auto;position:sticky;top:calc(env(safe-area-inset-top,0px) + 84px);padding-right:8px}}
+@media (max-width:899px){.split{grid-template-columns:minmax(0,1fr);gap:32px}}
+
+.passage{font-family:var(--f-read);font-size:17px;line-height:1.75}
+.passage h2{font-family:var(--f-read);font-weight:600;font-size:22px;line-height:1.3;margin:0 0 4px;text-wrap:balance}
+.passage .sub{font-family:var(--f-ui);font-size:14px;color:var(--muted);margin:0 0 24px}
+.passage p{margin:0 0 16px;max-width:66ch}
+.passage b.pl{font-family:var(--f-ui);font-weight:600;font-size:13px;margin-right:8px;color:var(--muted)}
+mark{background:var(--hl);color:inherit;border-radius:2px;cursor:pointer}
+.hint{font-size:13px;color:var(--muted);margin:0 0 20px;font-family:var(--f-ui)}
+
+.group{margin-bottom:36px}
+.group h3{margin:0 0 4px;font-size:14px;font-weight:600}
+.instr{font-size:14px;color:var(--muted);margin:0 0 14px;max-width:60ch}
+.instr strong{color:var(--ink);font-weight:600}
+.q{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;padding:12px;margin-inline:-12px;border-radius:10px}
+.num{font-family:var(--f-mono);font-size:13px;color:var(--muted);padding-top:2px;font-variant-numeric:tabular-nums}
+.qt{margin:0 0 10px}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opts.stack{flex-direction:column;align-items:flex-start}
+label.opt{display:inline-flex;align-items:center;gap:8px;padding:5px 12px;border:1px solid var(--line);border-radius:999px;cursor:pointer;font-size:13.5px;transition:background .15s}
+label.opt:hover{background:var(--soft)}
+label.opt input{position:absolute;opacity:0;pointer-events:none}
+label.opt:has(input:checked){background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+label.opt .l{font-weight:600}
+input.gap{font:inherit;font-size:14px;padding:6px 2px;border:0;border-bottom:1px solid var(--muted);background:transparent;color:var(--ink);width:min(220px,100%);border-radius:0}
+input.gap:focus{outline:none;border-bottom-color:var(--ink);border-bottom-width:2px}
+.q.ok{background:var(--ok-soft)}
+.q.bad{background:var(--bad-soft)}
+.q.ok .num{color:var(--ok)}
+.q.bad .num{color:var(--bad)}
+.fb{font-size:13px;margin-top:10px;color:var(--muted)}
+.fb b{color:var(--ok);font-weight:600}
+.q.bad .fb b{color:var(--bad)}
+
+.result{display:flex;flex-wrap:wrap;gap:12px 40px;align-items:center;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:32px}
+.result .big{font-family:var(--f-mono);font-size:30px;font-variant-numeric:tabular-nums;line-height:1.1}
+.result .lbl{font-size:13px;color:var(--muted)}
+.result p{margin:0;font-size:13px;color:var(--muted);flex-basis:100%}
+
+.player{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding:16px 20px;border-radius:14px;background:var(--soft);margin-bottom:36px}
+.player .status{font-size:13.5px;color:var(--muted);flex:1 1 200px;min-width:0}
+.meter{height:2px;background:var(--line);border-radius:2px;overflow:hidden;flex-basis:100%}
+.meter i{display:block;height:100%;width:0;background:var(--ink);transition:width .3s}
+.chk{display:inline-flex;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
+.form-card{border:1px solid var(--line);border-radius:14px;padding:16px 24px 8px}
+.form-card .ft{font-weight:600;font-size:14px;margin-bottom:6px}
+.transcript{font-size:14px;line-height:1.65}
+.transcript p{margin:0 0 8px}
+.transcript b{font-size:12px;color:var(--muted);font-weight:500;margin-right:8px}
+
+.task-switch{display:inline-flex;gap:2px;margin-bottom:28px;padding:3px;border-radius:999px;background:var(--soft)}
+.task-switch button{border:0;padding:6px 16px}
+.task-switch button.primary{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.prompt{margin:0 0 20px;font-family:var(--f-read);font-size:16.5px;max-width:66ch}
+.prompt p{margin:0 0 10px}
+.chart{overflow-x:auto;margin:8px 0 4px}
+.chart svg{display:block;width:100%;max-width:620px;height:auto}
+.chart .ax{stroke:var(--muted);stroke-width:1}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart text{fill:var(--muted);font:11px var(--f-ui)}
+.chart text.t{fill:var(--ink);font-weight:500;font-size:12px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.legend span::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;background:var(--c)}
+.small{font-size:13px;color:var(--muted)}
+textarea{width:100%;min-height:340px;font:16px/1.7 var(--f-read);padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);resize:vertical;margin-top:12px}
+textarea:focus{outline:none;border-color:var(--muted)}
+.wc{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:13px;color:var(--muted);margin-top:10px}
+.wc b{font-family:var(--f-mono);font-weight:500;font-variant-numeric:tabular-nums;color:var(--ink)}
+.wc .under b{color:var(--bad)}
+.crit{display:grid;gap:20px}
+.crit div h4{margin:0 0 6px;font-size:14px;font-weight:600}
+.crit ul{margin:0;padding-left:18px;font-size:14px;color:var(--muted)}
+.crit li{margin-bottom:4px}
+
+.sp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:24px;align-items:start}
+.sp-grid .pane{border:1px solid var(--line);border-radius:16px;padding:24px}
+.cue{background:var(--soft);border-radius:12px;padding:18px 20px;font-family:var(--f-read);font-size:16px}
+.cue h3{font-family:var(--f-read);margin:0 0 10px;font-size:17px;font-weight:600;text-wrap:balance}
+.cue ul{margin:6px 0 10px;padding-left:20px}
+.phase{font-size:13px;color:var(--muted);margin-bottom:4px}
+ol.qs{margin:0;padding-left:20px}
+ol.qs li{margin-bottom:10px}
+.pane h2{margin:0 0 14px;font-size:16px;font-weight:600}
+.note{font-size:13px;color:var(--muted);margin-top:14px}
+
+.ghead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px;margin-bottom:4px}
+.strat-link{border:0;padding:2px 0;background:none;font-size:13px;color:var(--muted);text-decoration:underline;text-underline-offset:3px;border-radius:0}
+.strat-link:hover{background:none;color:var(--ink)}
+.tip{display:block;margin-top:6px;padding-left:10px;border-left:2px solid var(--line);color:var(--ink)}
+.tip em{font-style:normal;color:var(--muted)}
+.skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px;margin-bottom:40px}
+.skill{background:var(--soft);border-radius:14px;padding:18px 20px}
+.skill h3{margin:0 0 6px;font-size:15px;font-weight:600}
+.skill p{margin:0;font-size:14px;color:var(--muted)}
+.sec-title{font-size:13px;color:var(--muted);margin:0 0 12px}
+.types{border-top:1px solid var(--line);margin-bottom:40px}
+details.type{border-bottom:1px solid var(--line)}
+details.type summary{list-style:none;cursor:pointer;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:18px 4px}
+details.type summary::-webkit-details-marker{display:none}
+details.type summary::after{content:"+";margin-left:auto;font-family:var(--f-mono);color:var(--muted);font-size:18px;line-height:1}
+details.type[open] summary::after{content:"\2013"}
+details.type summary h3{margin:0;font-size:16px;font-weight:600}
+.chip{font-size:12px;padding:2px 10px;border-radius:999px;background:var(--soft);color:var(--ink);white-space:nowrap}
+.tbody{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px 40px;padding:0 4px 24px}
+@media (max-width:760px){.tbody{grid-template-columns:minmax(0,1fr)}}
+.tbody p.lead{grid-column:1/-1;margin:0;color:var(--muted);max-width:70ch}
+.tbody h4{margin:0 0 8px;font-size:13px;color:var(--muted);font-weight:500}
+.tbody ol{margin:0;padding-left:20px}
+.tbody ol li{margin-bottom:6px}
+.tbody ul{margin:0;padding-left:18px;color:var(--muted);font-size:14px}
+.tbody ul li{margin-bottom:4px}
+.intest{grid-column:1/-1;font-size:14px;background:var(--soft);border-radius:12px;padding:14px 16px}
+.intest b{font-weight:600}
+.tworow{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:32px}
+.tworow ul{margin:0;padding-left:18px;font-size:14px;color:var(--muted)}
+.tworow li{margin-bottom:6px}
+.tworow h3{font-size:15px;margin:0 0 10px;font-weight:600}
+.credit{font-size:12.5px;color:var(--muted);margin-top:40px}
+.pg-note{font-size:13px;color:var(--muted);margin:-12px 0 28px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px;margin-bottom:16px}
+.sc{background:var(--soft);border-radius:14px;padding:16px 18px;display:grid;gap:2px}
+.sc-n{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.sc-n i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.sc-b{font-family:var(--f-mono);font-size:30px;line-height:1.2;font-variant-numeric:tabular-nums}
+.sc-d{font-size:13px;color:var(--muted)}
+.sc-d .up{color:var(--ok)} .sc-d .down{color:var(--bad)}
+.sc-c{font-size:12px;color:var(--muted)}
+.overall{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;padding:16px 0 28px;border-bottom:1px solid var(--line);margin-bottom:32px}
+.overall b{font-family:var(--f-mono);font-weight:500;font-size:22px}
+.overall span{color:var(--muted);font-size:14px}
+.pg-block{margin-bottom:40px}
+.pg-block > h2{font-size:16px;font-weight:600;margin:0 0 4px}
+.pg-block > p.small{margin:0 0 16px}
+.lc{overflow-x:auto}
+.lc svg{display:block;width:100%;max-width:760px;height:auto}
+.lc .grid{stroke:var(--line)}
+.lc text{fill:var(--muted);font:11px var(--f-ui)}
+.lc .ln{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.focus{display:grid;gap:10px}
+.fi{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:12px}
+.fi h3{margin:0;font-size:14.5px;font-weight:600}
+.fi p{margin:2px 0 0;font-size:13.5px;color:var(--muted);grid-column:1}
+.fi .go{grid-row:1/3;grid-column:2;font-size:13px;white-space:nowrap}
+@media (max-width:560px){.fi{grid-template-columns:minmax(0,1fr)}.fi .go{grid-row:auto;grid-column:1;justify-self:start}}
+.acc{display:grid;gap:4px}
+.ar{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr) auto;gap:6px 16px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.ar .nm{min-width:0}
+.ar .nm small{display:block;color:var(--muted);font-size:12px}
+.bar{height:6px;background:var(--soft);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ink);border-radius:3px}
+.ar.weak .bar i{background:var(--bad)}
+.ar .pc{font-family:var(--f-mono);font-size:13px;font-variant-numeric:tabular-nums;color:var(--muted);text-align:right;min-width:92px}
+@media (max-width:560px){.ar{grid-template-columns:minmax(0,1fr) auto}.ar .bar{grid-column:1/-1;grid-row:2}}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:999px;background:var(--bad-soft);color:var(--bad);margin-left:6px;vertical-align:1px}
+.crit-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:32px}
+.crit-cols h3{font-size:14px;font-weight:600;margin:0 0 8px}
+.hist{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+.hist th{text-align:left;font-weight:500;color:var(--muted);font-size:12.5px;padding:8px 10px 8px 0;border-bottom:1px solid var(--line)}
+.hist td{padding:10px 10px 10px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.hist td.n{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.hist .sec{display:inline-flex;align-items:center;gap:6px}
+.hist .sec i{width:7px;height:7px;border-radius:50%;background:var(--c)}
+.tablewrap{overflow-x:auto}
+.empty{padding:40px 24px;border:1px dashed var(--line);border-radius:16px;text-align:center;color:var(--muted)}
+.empty h2{color:var(--ink);font-size:17px;margin:0 0 6px}
+.empty p{margin:0 auto 16px;max-width:46ch}
+.rate{margin-top:28px;padding-top:24px;border-top:1px solid var(--line)}
+.rate h2{font-size:16px;font-weight:600;margin:0 0 4px}
+.rate-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:10px 16px;margin:14px 0 16px}
+.rate-grid label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+.rate-grid select{font:inherit;font-size:14px;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.msg{font-size:13px;color:var(--muted);margin-left:10px}
+.msg a, .result a{color:var(--ink)}
+.danger{color:var(--bad)}
+.logbox{border:1px solid var(--line);border-radius:16px;margin-bottom:36px}
+.logbox summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:16px 20px}
+.logbox summary::-webkit-details-marker{display:none}
+.logbox summary::after{content:"+";margin-left:auto;font-family:var(--f-mono);color:var(--muted);font-size:18px}
+.logbox[open] summary::after{content:"\2013"}
+.logbox summary b{display:block;font-weight:600;font-size:15px}
+.logbox summary small{display:block;color:var(--muted);font-size:13px}
+#logForm{padding:4px 20px 20px;display:grid;gap:16px}
+.lg-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:12px 14px}
+.lg-row label{display:grid;gap:4px;font-size:13px;color:var(--muted);align-content:start}
+.lg-row label[hidden]{display:none}
+.lg-row select,.lg-row input{font:inherit;font-size:14px;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);width:100%;min-width:0}
+.lg-row small{font-size:12px;color:var(--muted);min-height:1em}
+.raw{display:flex;align-items:center;gap:6px}
+.raw em{font-style:normal;font-size:13px;color:var(--muted);white-space:nowrap}
+.lg-sub{margin:0}
+.lg-types{border:0;padding:0;margin:0}
+.lg-types legend{font-size:13px;color:var(--muted);margin-bottom:8px;padding:0}
+.src{font-size:12px;color:var(--muted)}
+.lprog{font-size:14px;color:var(--muted);text-align:right}
+.lprog b{display:block;font-family:var(--f-mono);font-weight:500;font-size:22px;color:var(--ink)}
+.lmod{margin-bottom:28px}
+.lmod h2{font-size:13px;font-weight:500;color:var(--muted);margin:0 0 8px}
+.lrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px 4px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;font-weight:400}
+.lrow:hover{background:var(--soft)}
+.lmod .lrow:first-of-type{border-top:1px solid var(--line)}
+.lrow .t{flex:1;min-width:0;font-size:15px}
+.lrow .m{font-size:13px;color:var(--muted);white-space:nowrap}
+.lrow .ck{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line);flex:none;display:grid;place-items:center}
+.lrow.done .ck{background:var(--ok);border-color:var(--ok)}
+.lrow.done .ck::after{content:"";width:5px;height:9px;border:solid var(--bg);border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}
+.res a{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:14px;text-decoration:none;color:var(--ink)}
+.res a:hover{background:var(--soft)}
+.res b{display:block;font-weight:600;font-size:14.5px;margin-bottom:4px}
+.res span{font-size:13px;color:var(--muted)}
+#lesson{max-width:720px}
+.back{border:0;padding:0;background:none;color:var(--muted);font-weight:400;margin-bottom:20px}
+.back:hover{background:none;color:var(--ink)}
+.lbody{font-size:16px;line-height:1.7}
+.lbody h3{font-size:16px;font-weight:600;margin:28px 0 8px}
+.lbody p,.lbody li{max-width:68ch}
+.lbody ol,.lbody ul{padding-left:22px}
+.lbody li{margin-bottom:6px}
+.lt{overflow-x:auto;margin:12px 0 16px}
+.lt table{border-collapse:collapse;width:100%;min-width:460px;font-size:14px}
+.lt th{text-align:left;font-weight:500;color:var(--muted);font-size:13px;padding:8px 12px 8px 0;border-bottom:1px solid var(--line)}
+.lt td{padding:10px 12px 10px 0;border-bottom:1px solid var(--line);vertical-align:top}
+.callout{background:var(--soft);border-radius:12px;padding:14px 18px;margin:16px 0;font-size:15px}
+.model{font-family:var(--f-read);font-size:16.5px;line-height:1.75;border-left:2px solid var(--ink);padding:2px 0 2px 18px;margin:12px 0 16px}
+.model p{margin:0 0 12px}
+.wl{font-family:var(--f-mono);font-size:13.5px;line-height:1.9;color:var(--ink)}
+.quiz{margin-top:36px;padding-top:24px;border-top:1px solid var(--line)}
+.quiz h2{font-size:16px;font-weight:600;margin:0 0 12px}
+.lfoot{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:28px;padding-top:24px;border-top:1px solid var(--line)}
+.lfoot .sp{flex:1}
+footer{border-top:1px solid var(--line);padding-block:24px;font-size:13px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap bar">
+    <div class="brand">IELTS Practice Room<small>Academic · Test 1</small></div>
+    <nav class="tabs" aria-label="Sections">
+      <a href="#progress" data-v="progress">Progress</a>
+      <a href="#listening" data-v="listening">Listening</a>
+      <a href="#reading" data-v="reading">Reading</a>
+      <a href="#writing" data-v="writing">Writing</a>
+      <a href="#speaking" data-v="speaking">Speaking</a>
+      <a href="#learn" data-v="learn">Learn</a>
+      <a href="#strategies" data-v="strategies">Strategies</a>
+    </nav>
+    <button class="theme" id="themeBtn" aria-label="Switch light or dark mode" title="Switch theme">
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- READING -->
+<section class="view" id="v-reading">
+  <div class="head">
+    <div>
+      <div class="eyebrow">Reading · Passage 1 · Questions 1–13</div>
+      <h1>The Hidden Engineers of the Coast</h1>
+      <p>Spend about 20 minutes on this passage. In the real test you have 60 minutes for three passages and 40 questions.</p>
+    </div>
+    <div class="controls">
+      <div class="timer" id="rTimer">20:00</div>
+      <button id="rStart">Start timer</button>
+      <button class="primary" id="rCheck">Check answers</button>
+      <button id="rReset">Reset</button>
+    </div>
+  </div>
+  <div id="rResult"></div>
+  <div class="split">
+    <article class="pane passage" id="passage">
+      <p class="hint">Select any text to highlight it. Click a highlight to remove it.</p>
+      <h2>The Hidden Engineers of the Coast</h2>
+      <p class="sub">Why mangrove forests matter more than scientists once believed</p>
+      <p><b class="pl">A</b>Along tropical coastlines from the Sundarbans to the Niger Delta, mangrove forests occupy a narrow band where land and sea overlap. Twice a day, the tide floods their roots with salt water and then retreats, leaving behind mud that few other trees could tolerate. For centuries, these forests were dismissed as unproductive swamps, fit only to be drained for farmland or cleared for ports. Today, scientists increasingly describe them as some of the most valuable ecosystems on the planet.</p>
+      <p><b class="pl">B</b>Their value begins underground. Mangroves grow in waterlogged soil that contains very little oxygen, which slows the decay of fallen leaves and roots. As a result, organic matter accumulates over thousands of years, locking away carbon that would otherwise return to the atmosphere. Studies suggest that a hectare of mangrove can store up to four times as much carbon as a hectare of tropical rainforest, with most of it held not in the trees themselves but in the sediment beneath them.</p>
+      <p><b class="pl">C</b>Mangroves also act as natural sea defences. Their dense, tangled roots slow incoming waves and trap sediment, which gradually raises the level of the forest floor. Researchers modelling storm surges in Southeast Asia found that a belt of mangroves 500 metres wide could reduce wave height by more than half. After the 2004 Indian Ocean tsunami, several villages sheltered behind intact mangroves reported less damage than neighbouring settlements, although engineers caution that no forest can fully protect a coast from an event of that size.</p>
+      <p><b class="pl">D</b>Beneath the water, the roots form a nursery for marine life. Juvenile fish shelter among them from larger predators, feeding on the insects and small crustaceans that live in the mud. In some regions, an estimated three-quarters of commercially caught fish spend part of their lives in mangrove habitats. When forests are cleared, local fisheries often decline within a few years, a pattern that has pushed some coastal communities to protect the trees they once cut down.</p>
+      <p><b class="pl">E</b>Despite this, the world has lost roughly a third of its mangroves since the mid-twentieth century. The largest single cause has been shrimp farming: ponds are dug directly into cleared forest, used intensively for five to ten years, and then abandoned once the soil becomes too polluted. Urban expansion, timber collection and changes to river flow, often caused by upstream dams, have added to the decline.</p>
+      <p><b class="pl">F</b>Restoration has proved harder than expected. Early projects planted millions of seedlings on open mudflats, only to see most of them die, because the sites had never supported mangroves in the first place. More recent approaches focus on restoring the tidal conditions that allow forests to regenerate naturally. In one project in Indonesia, reopening blocked channels to former shrimp ponds allowed mangroves to return without any planting at all. Such methods are cheaper, but they require patience: a restored forest may take decades to store as much carbon as the one that was lost.</p>
+    </article>
+    <div class="pane" id="rQs"></div>
+  </div>
+</section>
+
+<!-- PROGRESS -->
+<section class="view" id="v-progress" hidden>
+  <div class="head">
+    <div>
+      <div class="eyebrow">Your progress</div>
+      <h1>Am I improving?</h1>
+      <p>Every attempt you mark is saved here. Watch your band move, see which question types cost you marks, and get told what to work on next.</p>
+    </div>
+  </div>
+  <p class="pg-note" id="pgStore">Loading your history…</p>
+  <details class="logbox" id="logBox">
+    <summary><span><b>Log a test from a book or official site</b><small>Cambridge IELTS 1–19, ielts.org samples, IELTS Ready or any other real test</small></span></summary>
+    <form id="logForm" novalidate>
+      <div class="lg-row">
+        <label for="lgSrc">Source<select id="lgSrc">
+          <option value="cam">Cambridge IELTS book</option>
+          <option value="org">Official sample test (ielts.org)</option>
+          <option value="ready">IELTS Ready (British Council)</option>
+          <option value="other">Other</option></select></label>
+        <label for="lgBook" id="lgBookWrap">Book<select id="lgBook"></select></label>
+        <label for="lgOther" id="lgOtherWrap" hidden>Name<input id="lgOther" placeholder="e.g. IDP practice test 3"></label>
+        <label for="lgTest">Test<select id="lgTest"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+        <label for="lgMod">Module<select id="lgMod"><option value="ac">Academic</option><option value="gt">General Training</option></select></label>
+        <label for="lgDate">Date taken<input type="date" id="lgDate"></label>
+      </div>
+      <p class="small lg-sub">Fill in only the sections you did. Use the raw score from the answer key for Listening and Reading.</p>
+      <div class="lg-row">
+        <label for="lgL">Listening<span class="raw"><input id="lgL" inputmode="numeric" placeholder="0–40"><em>/ 40</em></span><small id="lgLb"></small></label>
+        <label for="lgR">Reading<span class="raw"><input id="lgR" inputmode="numeric" placeholder="0–40"><em>/ 40</em></span><small id="lgRb"></small></label>
+        <label for="lgW">Writing band<select id="lgW"></select><small>Self-rated or from a teacher</small></label>
+        <label for="lgS">Speaking band<select id="lgS"></select><small>Self-rated or from a teacher</small></label>
+      </div>
+      <fieldset class="lg-types"><legend>Question types that cost you marks <span class="small">(optional)</span></legend><div class="opts" id="lgTypes"></div></fieldset>
+      <div><button class="primary" type="submit" id="lgSave">Save test</button><span class="msg" id="lgMsg" aria-live="polite"></span></div>
+    </form>
+  </details>
+  <div id="pgBody"></div>
+</section>
+
+<!-- LISTENING -->
+<section class="view" id="v-listening" hidden>
+  <div class="head">
+    <div>
+      <div class="eyebrow">Listening · Part 1 · Questions 1–10</div>
+      <h1>Enrolling at a Language Centre</h1>
+      <p>A man phones a language centre to enrol on a course. Read the questions first, then press Play. The recording uses your device's built-in voices.</p>
+    </div>
+  </div>
+  <div id="lResult"></div>
+  <div class="player">
+    <button class="primary" id="lPlay">Play recording</button>
+    <button id="lStop" disabled>Stop</button>
+    <span class="status" id="lStatus">Ready. You have 30 seconds to read the questions in the real test.</span>
+    <label class="chk"><input type="checkbox" id="lOnce" checked> Exam mode: play once</label>
+    <div class="meter"><i id="lMeter"></i></div>
+  </div>
+  <div class="split">
+    <div class="pane" id="lQs"></div>
+    <div class="pane">
+      <h2>Transcript</h2>
+      <p class="small" id="tHint">The transcript unlocks after you check your answers.</p>
+      <div class="transcript" id="transcript" hidden></div>
+      <div class="controls" style="margin-top:24px">
+        <button class="primary" id="lCheck">Check answers</button>
+        <button id="lReset">Reset</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WRITING -->
+<section class="view" id="v-writing" hidden>
+  <div class="head">
+    <div>
+      <div class="eyebrow">Writing · Academic</div>
+      <h1 id="wTitle">Task 1</h1>
+      <p id="wSub">Spend about 20 minutes on this task. Write at least 150 words.</p>
+    </div>
+    <div class="controls">
+      <div class="timer" id="wTimer">20:00</div>
+      <button id="wStart">Start timer</button>
+    </div>
+  </div>
+  <div class="task-switch">
+    <button class="primary" id="wT1">Task 1</button>
+    <button id="wT2">Task 2</button>
+  </div>
+  <div class="split">
+    <div class="pane">
+      <div id="wPrompt"></div>
+      <textarea id="wText" aria-label="Your answer" placeholder="Write your answer here…"></textarea>
+      <div class="wc"><span id="wCount">Words: <b>0</b></span><span>Your draft is saved in this browser.</span></div>
+    </div>
+    <div class="pane">
+      <h2>Mark yourself against the band descriptors</h2>
+      <p class="small">Examiners score four criteria equally. Read your answer against each one.</p>
+      <div class="crit" id="wCrit"></div>
+      <div class="rate">
+        <h2>Rate this attempt</h2>
+        <p class="small">Give yourself a band for each criterion. Be as strict as an examiner, using the checklist above.</p>
+        <div class="rate-grid" id="wRateGrid"></div>
+        <button class="primary" id="wSave">Save to progress</button><span class="msg" id="wMsg" aria-live="polite"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPEAKING -->
+<section class="view" id="v-speaking" hidden>
+  <div class="head">
+    <div>
+      <div class="eyebrow">Speaking · 11–14 minutes</div>
+      <h1>Learning and Skills</h1>
+      <p>Answer out loud. Record yourself on your phone and listen back for hesitation, range of vocabulary and grammar mistakes.</p>
+    </div>
+  </div>
+  <div class="sp-grid">
+    <div class="pane">
+      <div class="phase">Part 1 · 4–5 minutes</div>
+      <h2>Introduction and interview</h2>
+      <ol class="qs">
+        <li>Do you work or are you a student?</li>
+        <li>What do you enjoy most about your work or studies?</li>
+        <li>Where is your hometown, and what is it known for?</li>
+        <li>How has your hometown changed in recent years?</li>
+        <li>How often do you use the internet to learn new things?</li>
+        <li>Did you enjoy learning at primary school? Why or why not?</li>
+      </ol>
+      <p class="note">Aim for two to three sentences per answer: answer, reason, example.</p>
+    </div>
+    <div class="pane">
+      <div class="phase">Part 2 · 3–4 minutes</div>
+      <h2>Long turn</h2>
+      <div class="cue">
+        <h3>Describe a skill you learned that took a long time to master.</h3>
+        You should say:
+        <ul><li>what the skill was</li><li>when and why you started learning it</li><li>how you learned it</li></ul>
+        and explain how you felt when you finally mastered it.
+      </div>
+      <div class="controls" style="margin-top:14px">
+        <div class="timer" id="sTimer">1:00</div>
+        <button class="primary" id="sStart">Start 1 min preparation</button>
+        <button id="sReset">Reset</button>
+      </div>
+      <p class="note" id="sNote">You get one minute to make notes, then speak for up to two minutes. The timer switches over by itself.</p>
+    </div>
+    <div class="pane">
+      <div class="phase">Part 3 · 4–5 minutes</div>
+      <h2>Discussion</h2>
+      <ol class="qs">
+        <li>Why do some people give up on learning new skills?</li>
+        <li>Are practical skills more valuable than academic knowledge today? Why?</li>
+        <li>How has technology changed the way people learn?</li>
+        <li>Should schools teach life skills such as managing money? Why or why not?</li>
+        <li>Do you think older people learn differently from younger people?</li>
+      </ol>
+      <p class="note">Part 3 rewards developed opinions. Give a view, explain it, consider another side, then conclude.</p>
+    </div>
+  </div>
+  <div class="rate">
+    <h2>Rate this speaking practice</h2>
+    <p class="small">Listen back to your recording and give yourself a band for each criterion.</p>
+    <div class="rate-grid" id="sRateGrid"></div>
+    <button class="primary" id="sSave">Save to progress</button><span class="msg" id="sMsg" aria-live="polite"></span>
+  </div>
+</section>
+
+<!-- LEARN -->
+<section class="view" id="v-learn" hidden>
+  <div id="learnHome">
+    <div class="head">
+      <div>
+        <div class="eyebrow">Learn</div>
+        <h1>Study at your own pace</h1>
+        <p>Short lessons on every part of the test, each with a quick check at the end. Mark a lesson as learned and it shows in your progress.</p>
+      </div>
+      <div class="lprog" id="lprog"></div>
+    </div>
+    <div id="lmods"></div>
+    <div class="pg-block">
+      <h2>Free official resources</h2>
+      <p class="small">Go further with material from the people who make the test.</p>
+      <div class="res" id="lres"></div>
+    </div>
+  </div>
+  <article id="lesson" hidden></article>
+</section>
+
+<!-- STRATEGIES -->
+<section class="view" id="v-strategies" hidden>
+  <div class="head">
+    <div>
+      <div class="eyebrow">Reading strategies</div>
+      <h1>Which strategy for which question</h1>
+      <p>A strategy for each of the 12 Reading question types. The ones marked with a question number appear in Test 1, so you can see exactly where you could have used them.</p>
+    </div>
+  </div>
+  <p class="sec-title">The four skills every question uses</p>
+  <div class="skills" id="skills"></div>
+  <p class="sec-title">Question types</p>
+  <div class="types" id="types"></div>
+  <div class="tworow">
+    <div><h3>When you meet a word you don't know</h3><ul>
+      <li>First ask whether you even need it for the answer. Often you don't, so skip it.</li>
+      <li>Read the words around it and the paragraph's first sentence for the general meaning.</li>
+      <li>Work out whether it's a noun, verb or adjective. That narrows the meaning.</li>
+      <li>Try swapping in a word you know. If the sentence still makes sense, that's close enough.</li>
+      <li>If it's still blocking you, let it go and move on.</li></ul></div>
+    <div><h3>Answer sheet habits that save marks</h3><ul>
+      <li>Read every instruction and word limit before you answer.</li>
+      <li>One spelling slip makes the answer wrong. Check every gap-fill.</li>
+      <li>Transfer answers one section at a time, not all at the end.</li>
+      <li>Never leave a blank. Wrong answers lose nothing, so always guess.</li>
+      <li>There is no extra transfer time in Reading. Budget about 20 minutes per passage.</li></ul></div>
+  </div>
+  <p class="credit">Strategy notes summarised from The Complete A to Z Guide to IELTS Reading by IELTS Advantage (ieltsadvantage.com).</p>
+</section>
+
+</main>
+<footer><div class="wrap">All questions are original practice material written in the IELTS Academic format. Band scores shown are estimates scaled from this test's length to the official 40-question scale.</div></footer>
+
+<script>
+const $=s=>document.querySelector(s);
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const o=(...a)=>a.map(x=>[x,x]);
+
+/* ---------- Data ---------- */
+const TFNG=o('TRUE','FALSE','NOT GIVEN'), PARA=o('A','B','C','D','E','F');
+const READING=[
+ {title:'Questions 1–5',strat:'tfng',instr:'Do the following statements agree with the information in the passage? Choose <strong>TRUE</strong> if the statement agrees, <strong>FALSE</strong> if it contradicts the information, or <strong>NOT GIVEN</strong> if there is no information on this.',items:[
+  {n:1,kind:'choice',opts:TFNG,q:'Mangroves were once regarded as land of little use.',a:'TRUE',why:'Paragraph A: they were "dismissed as unproductive swamps".',tip:'Spot the paraphrase: "regarded as of little use" means the same as "dismissed as unproductive". Answers follow the passage order, so Q1 is in paragraph A.'},
+  {n:2,kind:'choice',opts:TFNG,q:'Most of the carbon in a mangrove forest is stored in its trunks and branches.',a:'FALSE',why:'Paragraph B: most is held in the sediment, not the trees.',tip:'Circle the qualifier "most". The passage puts most of the carbon in the sediment, which contradicts the statement, so FALSE.'},
+  {n:3,kind:'choice',opts:TFNG,q:'Mangroves store more carbon than any other type of ecosystem.',a:'NOT GIVEN',why:'Paragraph B only compares mangroves with tropical rainforest.',tip:'"Any other" is a claim the passage never makes. It only mentions rainforest. Don\'t fill the gap with outside knowledge.'},
+  {n:4,kind:'choice',opts:TFNG,q:'Engineers believe mangroves can completely protect a coast from a tsunami.',a:'FALSE',why:'Paragraph C: engineers say no forest can fully protect a coast from an event of that size.',tip:'The qualifier "completely" clashes with "no forest can fully protect". A clear contradiction means FALSE.'},
+  {n:5,kind:'choice',opts:TFNG,q:'Shrimp farmers are now legally required to restore abandoned ponds.',a:'NOT GIVEN',why:'Paragraph E mentions abandonment but nothing about laws.',tip:'After a reasonable search for "law" or "required" turns up nothing, choose NOT GIVEN and move on.'}]},
+ {title:'Questions 6–9',strat:'info',instr:'Which paragraph contains the following information? Choose the correct letter, <strong>A–F</strong>. You may use any letter more than once.',items:[
+  {n:6,kind:'choice',opts:PARA,q:'an example of a forest recovering without any human planting',a:'F',why:'Paragraph F: the Indonesian project needed no planting.',tip:'Rephrase the statement: "without human planting" becomes "without any planting at all" in paragraph F.'},
+  {n:7,kind:'choice',opts:PARA,q:'a figure showing how much mangroves can reduce wave height',a:'C',why:'Paragraph C: a 500-metre belt can cut wave height by more than half.',tip:'Start with statements that contain numbers. Scan for figures such as "500 metres" and "more than half".'},
+  {n:8,kind:'choice',opts:PARA,q:'a reason why dead plant material breaks down slowly',a:'B',why:'Paragraph B: low oxygen in the soil slows decay.',tip:'Synonym match: "breaks down slowly" means "slows the decay". Scan for the idea, not the exact words.'},
+  {n:9,kind:'choice',opts:PARA,q:'a change of attitude among people living near mangroves',a:'D',why:'Paragraph D: communities now protect trees they once cut down.',tip:'The answer is a detail, not the main idea. Paragraph D is about fish, but its last sentence shows the change.'}]},
+ {title:'Questions 10–13',strat:'sent',instr:'Complete the sentences below. Choose <strong>NO MORE THAN TWO WORDS</strong> from the passage for each answer.',items:[
+  {n:10,kind:'text',q:'Young fish hide among mangrove roots to escape ______.',a:['larger predators','predators'],why:'Paragraph D.',tip:'Predict a noun after "escape". Then scan for the synonym of "young fish": "juvenile fish".'},
+  {n:11,kind:'text',q:'Changes to river flow are often caused by upstream ______.',a:['dams'],why:'Paragraph E: "upstream dams". "upstream" is already in the sentence.',tip:'Check that the completed sentence is grammatical and doesn\'t repeat a word already in it.'},
+  {n:12,kind:'text',q:'Many seedlings in early projects died because they were planted on open ______.',a:['mudflats','mud flats'],why:'Paragraph F.',tip:'Answers follow the passage order, so after Q11 (paragraph E) look in F. Use "open" as your keyword.'},
+  {n:13,kind:'text',q:'Newer methods aim to restore the ______ that let forests grow back naturally.',a:['tidal conditions'],why:'Paragraph F.',tip:'Copy the exact words from the passage and check the spelling. Two words fits the limit.'}]}
+];
+const LISTENING=[
+ {title:'Questions 1–6',strat:'table',instr:'Complete the form below. Write <strong>ONE WORD AND/OR A NUMBER</strong> for each answer.',form:'Riverside Language Centre · Enrolment',items:[
+  {n:1,kind:'text',q:'Surname: ______',a:['okoro'],why:'He spells it O-K-O-R-O.',tip:'Names are usually spelled out, and spelling is marked strictly.'},
+  {n:2,kind:'text',q:'Date of birth: 14 ______ 1998',a:['march'],why:'"The fourteenth of March".',tip:'Predict the type of answer first. Between a day and a year, it has to be a month.'},
+  {n:3,kind:'text',q:'Phone number: 079 452 ______',a:['613'],why:'"oh seven nine, four five two, six one three".',tip:'Get ready for numbers. Speakers often say "oh" for zero.'},
+  {n:4,kind:'text',q:'Course starts: ______ November',a:['9','9th','ninth'],why:'"starts on the ninth of November".',tip:'Predict a number. "9" counts as one word and fits the limit.'},
+  {n:5,kind:'text',q:'Fee if paid this month: £______',a:['210','£210'],why:'The full fee is £240; the early price is £210.',tip:'Watch for corrections. The first figure (£240) is a distractor, and "but" signals the real answer.'},
+  {n:6,kind:'text',q:'Students must bring a ______',a:['notebook'],why:'Materials are included; just bring a notebook.',tip:'Predict a noun. "Textbook" is mentioned first but is the wrong answer.'}]},
+ {title:'Questions 7–10',strat:'mcq',instr:'Choose the correct letter, <strong>A, B or C</strong>.',items:[
+  {n:7,kind:'choice',stack:true,q:'The placement test is taken',opts:[['A','online'],['B','in person on a weekday morning'],['C','on the first evening of the course']],a:'B',why:'"It used to be [online], but now we do it in person… any weekday morning".',tip:'Distractor: "online" is mentioned, but "used to be" rules it out.'},
+  {n:8,kind:'choice',stack:true,q:'The centre is',opts:[['A','next to the train station'],['B','opposite the train station'],['C','above a bank']],a:'B',why:'"on Mill Street, opposite the train station".',tip:'Listen closely: "next to" refers to the pharmacy, not the station.'},
+  {n:9,kind:'choice',stack:true,q:'The centre is on the',opts:[['A','ground floor'],['B','first floor'],['C','second floor']],a:'C',why:'"we\'re on the second floor".',tip:'Predict that you need a floor number, then listen for it.'},
+  {n:10,kind:'choice',stack:true,q:'Most students travel to the centre by',opts:[['A','car'],['B','bus'],['C','train']],a:'B',why:'"most students take the bus".',tip:'Car is ruled out by "no parking", and train is only a landmark. Rule out each option.'}]}
+];
+const SCRIPT=[
+ ['R','Good morning, Riverside Language Centre. How can I help you?'],
+ ['C',"Hi. I'd like to enrol on one of your evening English courses."],
+ ['R','Of course. Can I take your full name first?'],
+ ['C',"Yes, it's Daniel Okoro. That's O. K. O. R. O."],
+ ['R','Thank you. And your date of birth?'],
+ ['C','The fourteenth of March, nineteen ninety-eight.'],
+ ['R','And a contact phone number?'],
+ ['C',"It's oh seven nine, four five two, six one three."],
+ ['R','Lovely. Which course were you interested in?'],
+ ['C','The IELTS preparation course. The one on Tuesday and Thursday evenings.'],
+ ['R','That one starts on the ninth of November and runs for ten weeks. Classes are from six thirty to eight thirty.'],
+ ['C','Great. How much does it cost?'],
+ ['R',"The full fee is two hundred and forty pounds. But if you pay before the end of this month, there's a discount, so it comes to two hundred and ten."],
+ ['C',"I'll pay early, then. Do I need to buy a textbook?"],
+ ['R',"No, all the materials are included. You'll just need to bring a notebook. Oh, and we ask every new student to take a short placement test."],
+ ['C','Is that online?'],
+ ['R','It used to be, but now we do it in person. You can come in any weekday morning before the course starts. It takes about forty-five minutes.'],
+ ['C',"And where exactly are you? I've never been."],
+ ['R',"We're on Mill Street, opposite the train station. The entrance is next to the pharmacy, and we're on the second floor."],
+ ['C','Is there parking?'],
+ ['R',"There's no parking at the centre itself, I'm afraid, but most students take the bus. The number twelve stops right outside."],
+ ['C','Perfect. Thank you.']
+];
+const BANDS=[[39,9],[37,8.5],[35,8],[33,7.5],[30,7],[27,6.5],[23,6],[19,5.5],[15,5],[13,4.5],[10,4],[8,3.5],[6,3],[4,2.5],[0,0]];
+const LBANDS=[[39,9],[37,8.5],[35,8],[32,7.5],[30,7],[26,6.5],[23,6],[18,5.5],[16,5],[13,4.5],[11,4],[8,3.5],[6,3],[4,2.5],[0,0]];
+const band=(s,t,tbl)=>{const x=Math.round(s/t*40);return tbl.find(r=>x>=r[0])[1]};
+
+/* ---------- Strategies ---------- */
+const SKILLS=[
+ ['Skimming','Reading fast for the general idea. Use titles, the first and last paragraphs, and the first sentence of each paragraph.'],
+ ['Scanning','Moving your eyes quickly to find where an answer is: names, numbers, keywords. It finds the location, not the answer.'],
+ ['Close reading','Reading one sentence or section carefully to understand it fully. This is the skill that actually gives you the answer.'],
+ ['Inference','Working out meaning that isn\'t stated directly, including unfamiliar words, from the context.']];
+const STRAT=[
+ {id:'tfng',name:'True / False / Not Given',in:'Reading Q1–5',lead:'Decide whether a factual statement agrees with the passage, contradicts it, or is not mentioned. Often the hardest type on the paper.',
+  steps:['Check whether the question asks about facts (True/False) or the writer\'s opinion (Yes/No).','Read each statement for its full meaning, not just its keywords.','Circle qualifiers: some, all, most, only, always, completely.','Find the matching part of the passage. Answers follow the passage order.','Compare carefully: confirms = TRUE, says the opposite = FALSE, missing = NOT GIVEN.'],
+  traps:['Not Given means the information is absent, not that it is hard to find.','Don\'t use what you already know about the topic.','If you can\'t find it after a reasonable search, choose Not Given and move on.'],
+  test:'Q2 and Q4 hinge on the qualifiers "most" and "completely". Q3 and Q5 are Not Given because the passage never mentions other ecosystems or laws.'},
+ {id:'ynng',name:'Yes / No / Not Given',lead:'Like True/False/Not Given, but you judge the writer\'s opinion rather than facts.',
+  steps:['Confirm the question is about the writer\'s views.','Look for opinion markers: I believe, arguably, comparatives and superlatives.','Use the question order to find each section.','Answer No only if the writer clearly contradicts the statement.'],
+  traps:['Ignore opinions of other people quoted in the text.','A slight difference is not a contradiction.']},
+ {id:'info',name:'Matching information to paragraphs',in:'Reading Q6–9',lead:'Match a detail (a reason, example, figure or description) to the paragraph that contains it.',
+  steps:['Do this set last, once the other questions have shown you the passage.','Start with statements that contain names, places or numbers. They are easiest to scan for.','Rephrase each statement in your own words so you recognise synonyms.','Skim the whole text for its structure.','Scan likely paragraphs and check the exact sentence.'],
+  traps:['The answer is usually a detail, not the paragraph\'s main idea.','Some paragraphs have no answer and some have two.','Numbers are often paraphrased: 34% may appear as "about a third".'],
+  test:'Q9 is the trap here: paragraph D is mainly about fish, but its last sentence holds the change of attitude.'},
+ {id:'sent',name:'Sentence completion',in:'Reading Q10–13',lead:'Fill gaps in sentences with words taken from the passage. As much a vocabulary test as a reading one.',
+  steps:['Note the word limit and that words must come from the text.','Read the sentence, predict the type of word needed, mark keywords.','Scan for synonyms of those keywords. Answers follow the passage order.','Re-read the sentence to confirm what is missing.','Read the passage section closely, copy the exact words, check spelling.'],
+  traps:['"No more than two words" means one or two words are both fine.','The completed sentence must be grammatical.','Don\'t repeat a word that is already in the sentence.'],
+  test:'Q11: "upstream" is already in the sentence, so the answer is just "dams".'},
+ {id:'short',name:'Short answer questions',lead:'Answer direct questions using words from the text, usually within a word limit.',
+  steps:['Note the word limit, often "no more than three words and/or a number".','Work out what information each question needs.','Underline keywords and think of synonyms.','Find the section. Answers follow the passage order.','Read that section closely and pick out the exact answer.'],
+  traps:['Answers don\'t have to be full sentences.','Going over the word limit makes the answer wrong.']},
+ {id:'mcq',name:'Multiple choice',in:'Listening Q7–10',lead:'Choose the correct option from three or four.',
+  steps:['Read the question and options before the text.','Skim the text for the general meaning.','Underline keywords in the question and the options, and think of synonyms.','Predict the answer before you look.','Read the relevant section and work out why each wrong option is wrong.'],
+  traps:['Distractors: wrong options often use words that appear in the text.','Always answer. Narrow it to two options and guess if needed.'],
+  test:'Q7: "online" is mentioned, but the speaker says it "used to be". Q8: "next to" refers to the pharmacy, not the station.'},
+ {id:'summary',name:'Summary completion',lead:'Fill gaps in a summary, either from a word list or from the passage.',
+  steps:['Check the word limit and whether answers come from a list or the text.','Skim the summary for its overall meaning.','Predict the word type for each gap.','Scan the passage for synonyms to find the matching section.','Check that each answer fits the grammar.'],
+  traps:['Word lists contain extra words. Cross out ones that can\'t fit by meaning or grammar.']},
+ {id:'endings',name:'Matching sentence endings',lead:'Join sentence beginnings to the correct endings, based on the passage.',
+  steps:['Read the instructions.','Read the beginnings first, marking names, places and dates.','Predict how each could end.','Rule out endings that don\'t fit grammatically or logically.','Find the passage section and confirm the match.'],
+  traps:['Choose by what the text says, not by which ending sounds right.','Answers follow the passage order, so find the first one to know where to start.']},
+ {id:'headings',name:'Matching headings',lead:'Pick the heading that best sums up each paragraph. There are always more headings than paragraphs.',
+  steps:['Do this set first if it appears. It gives you an overview of the text.','Read the paragraphs before the headings.','Read the first one or two sentences and the last sentence of each paragraph.','Sum up each paragraph in a few words.','Match the obvious ones first, then compare similar headings.'],
+  traps:['Headings that share a keyword with the paragraph are often wrong.','You don\'t need every word, only the main idea.']},
+ {id:'diagram',name:'Labelling a diagram',lead:'Label a machine, a natural process or a plan using words from the text.',
+  steps:['Check the word limit.','Look at the diagram briefly. Don\'t try to understand all of it.','Use the existing labels as keywords.','Predict whether each label is a noun, verb or adjective.','Find the text section and copy the exact words.'],
+  traps:['Numbers and hyphenated words each count as one word.','Do the easy labels first.']},
+ {id:'names',name:'Matching names',lead:'Match researchers or experts to what they said or found.',
+  steps:['Check whether names can be used more than once.','Scan for every mention of each name and mark it.','Start with names that appear only once.','Read the sentences around each name.','Cross off each statement once it\'s matched.'],
+  traps:['Names may be shortened, for example "Jones" for "John Jones".','Look for paraphrases, not identical wording.']},
+ {id:'table',name:'Table, form and flow-chart completion',in:'Listening Q1–6',lead:'Fill gaps in a table, form or flow chart with words from the text or recording.',
+  steps:['Check the word limit and whether words must be exact.','Use the headings and filled-in rows to understand the table.','Predict the type of information for each gap: a name, number, date or noun.','Find the relevant section.','Copy the words exactly and check spelling.'],
+  traps:['Don\'t change the form of a word.','Spelling and the word limit are marked strictly.'],
+  test:'Q5: the speaker gives £240 first and then corrects it to £210. In Listening, wait for words like "but".'}
+];
+function renderStrategies(){
+  $('#skills').innerHTML=SKILLS.map(([h,p])=>`<div class="skill"><h3>${h}</h3><p>${p}</p></div>`).join('');
+  $('#types').innerHTML=STRAT.map(t=>`<details class="type" id="st-${t.id}"><summary><h3>${t.name}</h3>${t.in?`<span class="chip">${t.in}</span>`:''}</summary>
+   <div class="tbody"><p class="lead">${t.lead}</p>
+   <div><h4>Steps</h4><ol>${t.steps.map(x=>`<li>${x}</li>`).join('')}</ol></div>
+   <div><h4>Watch out for</h4><ul>${t.traps.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+   ${t.test?`<div class="intest"><b>In Test 1:</b> ${t.test}</div>`:''}</div></details>`).join('');
+}
+renderStrategies();
+function openStrategy(id){location.hash='strategies';setTimeout(()=>{const d=document.getElementById('st-'+id);if(d){d.open=true;d.scrollIntoView({block:'start'});window.scrollBy(0,-80)}},30)}
+document.addEventListener('click',e=>{const b=e.target.closest('.strat-link');if(b)openStrategy(b.dataset.s)});
+
+/* ---------- Question rendering & marking ---------- */
+const norm=s=>String(s).toLowerCase().replace(/£/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+function render(el,groups,p){
+  el.innerHTML=groups.map(g=>{
+    const rows=g.items.map(it=>{
+      let field;
+      if(it.kind==='text') field=`<input class="gap" id="${p}${it.n}" autocomplete="off" spellcheck="false" aria-label="Answer ${it.n}">`;
+      else field=`<div class="opts${it.stack?' stack':''}">`+it.opts.map(([v,l])=>`<label class="opt"><input type="radio" name="${p}${it.n}" value="${v}">${v===l?`<span>${l}</span>`:`<span class="l">${v}</span><span>${l}</span>`}</label>`).join('')+`</div>`;
+      return `<div class="q" id="${p}row${it.n}"><div class="num">${it.n}</div><div><div class="qt">${it.q}</div>${field}<div class="fb" hidden></div></div></div>`;
+    }).join('');
+    const sname=g.strat?STRAT.find(x=>x.id===g.strat).name:'';
+    return `<div class="group"><div class="ghead"><h3>${g.title}</h3>${g.strat?`<button class="strat-link" data-s="${g.strat}">Strategy: ${sname}</button>`:''}</div><p class="instr">${g.instr}</p>${g.form?`<div class="form-card"><div class="ft">${g.form}</div>${rows}</div>`:rows}</div>`;
+  }).join('');
+}
+function mark(groups,p,tbl,out,label){
+  let s=0,t=0;const byType={},missed=[];
+  groups.forEach(g=>g.items.forEach(it=>{
+    t++;const k=g.strat||'other';byType[k]=byType[k]||[0,0];byType[k][1]++;
+    const row=document.getElementById(p+'row'+it.n), fb=row.querySelector('.fb');
+    let v=''; if(it.kind==='text') v=norm(document.getElementById(p+it.n).value);
+    else {const c=document.querySelector(`input[name="${p}${it.n}"]:checked`); v=c?c.value:'';}
+    const ans=Array.isArray(it.a)?it.a:[it.a];
+    const ok=v!==''&&ans.some(a=>it.kind==='text'?norm(a)===v:a===v);
+    if(ok){s++;byType[k][0]++}else missed.push(it.n);
+    row.classList.toggle('ok',ok); row.classList.toggle('bad',!ok);
+    fb.hidden=false; fb.innerHTML=`<b>${ok?'Correct':(v?'Incorrect':'No answer')}.</b> Answer: ${ans[0]}. ${it.why}${it.tip?`<span class="tip"><em>Strategy:</em> ${it.tip}</span>`:''}`;
+  }));
+  out.innerHTML=`<div class="result"><div><div class="lbl">Score</div><div class="big">${s}/${t}</div></div><div><div class="lbl">Estimated band</div><div class="big">${band(s,t,tbl).toFixed(1)}</div></div><p>${label} Wrong answers show the evidence from the ${p==='r'?'passage':'recording'}.</p></div>`;
+  out.scrollIntoView({behavior:'smooth',block:'nearest'});
+  return {score:s,total:t,band:band(s,t,tbl),byType,missed};
+}
+function clear(el,out){el.querySelectorAll('input').forEach(i=>{if(i.type==='radio')i.checked=false;else i.value=''});el.querySelectorAll('.q').forEach(q=>{q.classList.remove('ok','bad');q.querySelector('.fb').hidden=true});out.innerHTML=''}
+
+/* ---------- Timer ---------- */
+function Timer(el,secs,onEnd){
+  let left=secs,id=null;const draw=()=>{const m=Math.floor(left/60),s=left%60;el.textContent=m+':'+String(s).padStart(2,'0');el.classList.toggle('low',left<=60&&left<secs)};
+  draw();
+  return{start(){if(id)return;id=setInterval(()=>{left--;draw();if(left<=0){clearInterval(id);id=null;onEnd&&onEnd()}},1000)},
+   stop(){clearInterval(id);id=null},reset(n){this.stop();if(n)secs=n;left=secs;draw()},get running(){return!!id},get left(){return left},get total(){return secs}};
+}
+
+/* ---------- Reading ---------- */
+render($('#rQs'),READING,'r');
+const rT=Timer($('#rTimer'),1200,()=>{$('#rStart').textContent='Time is up';$('#rStart').disabled=true});
+$('#rStart').onclick=()=>{if(rT.running){rT.stop();$('#rStart').textContent='Resume timer'}else{rT.start();$('#rStart').textContent='Pause timer'}};
+let rSaved=false;
+$('#rCheck').onclick=async()=>{const used=rT.total-rT.left;rT.stop();
+  const r=mark(READING,'r',BANDS,$('#rResult'),'Scaled from 13 questions to the 40-question Academic Reading scale.');
+  if(rSaved){resultNote($('#rResult'),'This attempt is already saved. Press Reset to start a new one.');return}
+  rSaved=true;const ok=await saveAttempt({section:'reading',test:'Test 1',...r,mins:used>0?Math.round(used/60):null});
+  resultNote($('#rResult'),ok?'Saved to your progress. <a href="#progress">See how you\'re doing</a>':'Could not save this attempt.')};
+$('#rReset').onclick=()=>{rSaved=false;clear($('#rQs'),$('#rResult'));rT.reset();$('#rStart').disabled=false;$('#rStart').textContent='Start timer';
+  $('#passage').querySelectorAll('mark').forEach(m=>m.replaceWith(...m.childNodes))};
+const passage=$('#passage');
+passage.addEventListener('mouseup',()=>{const sel=getSelection();if(!sel||sel.isCollapsed)return;const r=sel.getRangeAt(0);
+  if(!passage.contains(r.commonAncestorContainer))return;try{const m=document.createElement('mark');r.surroundContents(m)}catch(e){}sel.removeAllRanges()});
+passage.addEventListener('click',e=>{if(e.target.tagName==='MARK'){const m=e.target;m.replaceWith(...m.childNodes)}});
+
+/* ---------- Listening ---------- */
+render($('#lQs'),LISTENING,'l');
+$('#transcript').innerHTML=SCRIPT.map(([w,t])=>`<p><b>${w==='R'?'Receptionist':'Daniel'}</b>${t}</p>`).join('');
+let played=false;
+function setStatus(t){$('#lStatus').textContent=t}
+$('#lPlay').onclick=()=>{
+  if(!('speechSynthesis' in window)){setStatus('This browser has no built-in voices. Ask someone to read the transcript aloud, or try Chrome or Safari.');return}
+  if(played&&$('#lOnce').checked){setStatus('Exam mode allows one play. Untick it to listen again.');return}
+  speechSynthesis.cancel();
+  const vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));
+  const vA=vs.find(v=>/GB/i.test(v.lang))||vs[0];const vB=vs.find(v=>v!==vA&&/en/i.test(v.lang))||vA;
+  SCRIPT.forEach(([w,t],i)=>{const u=new SpeechSynthesisUtterance(t);if(vA)u.voice=w==='R'?vA:vB;u.lang=(u.voice&&u.voice.lang)||'en-GB';
+    u.pitch=w==='R'?1.15:.85;u.rate=.92;
+    u.onstart=()=>{setStatus(`Playing… line ${i+1} of ${SCRIPT.length}`);$('#lMeter').style.width=((i+1)/SCRIPT.length*100)+'%'};
+    if(i===SCRIPT.length-1)u.onend=()=>{setStatus('Recording finished. Check your spelling, then press Check answers.');$('#lStop').disabled=true;$('#lPlay').disabled=false};
+    speechSynthesis.speak(u)});
+  played=true;$('#lStop').disabled=false;$('#lPlay').disabled=true;
+};
+$('#lStop').onclick=()=>{speechSynthesis.cancel();setStatus('Stopped.');$('#lStop').disabled=true;$('#lPlay').disabled=false};
+let lSaved=false;
+$('#lCheck').onclick=async()=>{const r=mark(LISTENING,'l',LBANDS,$('#lResult'),'Scaled from 10 questions to the 40-question Listening scale. Spelling counts in the real test.');
+  if(lSaved)resultNote($('#lResult'),'This attempt is already saved. Press Reset to start a new one.');
+  else{lSaved=true;const ok=await saveAttempt({section:'listening',test:'Test 1',...r});resultNote($('#lResult'),ok?'Saved to your progress. <a href="#progress">See how you\'re doing</a>':'Could not save this attempt.')}$('#transcript').hidden=false;$('#tHint').hidden=true};
+$('#lReset').onclick=()=>{lSaved=false;clear($('#lQs'),$('#lResult'));played=false;$('#lMeter').style.width='0';setStatus('Ready.');$('#transcript').hidden=true;$('#tHint').hidden=false;try{speechSynthesis.cancel()}catch(e){}};
+
+/* ---------- Writing ---------- */
+const DATA={labels:['Country A','Country B','Country C','Country D'],years:['2005','2015','2025'],v:[[32,68,91],[15,47,83],[58,79,88],[8,22,61]]};
+function chartSVG(){
+  const W=600,H=320,L=48,R=588,T=24,B=270,ph=B-T,gw=(R-L)/4,bw=28,gap=4;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Bar chart of household internet access in four countries, 2005 to 2025">`;
+  for(let y=0;y<=100;y+=20){const yy=B-y/100*ph;s+=`<line class="grid" x1="${L}" x2="${R}" y1="${yy}" y2="${yy}"/><text x="${L-8}" y="${yy+4}" text-anchor="end">${y}%</text>`}
+  DATA.v.forEach((row,g)=>{const x0=L+g*gw+(gw-(3*bw+2*gap))/2;
+    row.forEach((v,k)=>{const h=v/100*ph,x=x0+k*(bw+gap);s+=`<rect x="${x}" y="${B-h}" width="${bw}" height="${h}" fill="var(--y${k+1})" rx="2"/><text x="${x+bw/2}" y="${B-h-5}" text-anchor="middle">${v}</text>`});
+    s+=`<text class="t" x="${L+g*gw+gw/2}" y="${B+20}" text-anchor="middle">${DATA.labels[g]}</text>`});
+  s+=`<line class="ax" x1="${L}" x2="${R}" y1="${B}" y2="${B}"/></svg>`;return s;
+}
+const TASKS={
+ 1:{title:'Task 1',sub:'Spend about 20 minutes on this task. Write at least 150 words.',min:150,secs:1200,
+  html:`<div class="prompt"><p>The chart below shows the percentage of households with internet access in four countries in 2005, 2015 and 2025.</p><p>Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</p></div>
+  <div class="legend">${DATA.years.map((y,i)=>`<span style="--c:var(--y${i+1})">${y}</span>`).join('')}</div><div class="chart">${chartSVG()}</div><p class="small">Households with internet access (%). Figures are invented for practice.</p>`,
+  crit:[['Task Achievement',['Opens with an overview of the main trends (all countries rose; D grew fastest)','Highlights key features instead of listing every number','Uses accurate figures to support comparisons','No personal opinions or causes that the chart does not show']],
+   ['Coherence and Cohesion',['Clear paragraphs: introduction, overview, two detail paragraphs','Linking that varies: whereas, by contrast, the figure for…']],
+   ['Lexical Resource',['Varied trend language: rose sharply, more than doubled, roughly a third','Paraphrases the question instead of copying it']],
+   ['Grammatical Range and Accuracy',['Correct past and future tenses for the years shown','Mix of simple and complex sentences, few errors']]]},
+ 2:{title:'Task 2',sub:'Spend about 40 minutes on this task. Write at least 250 words.',min:250,secs:2400,
+  html:`<div class="prompt"><p>Some people believe that university education should be free for everyone, while others think students should pay for their own studies.</p><p>Discuss both views and give your own opinion.</p><p>Give reasons for your answer and include any relevant examples from your own knowledge or experience.</p></div>`,
+  crit:[['Task Response',['Discusses both views in reasonable depth','States your own opinion clearly and keeps it consistent','Supports each main idea with an explanation and an example']],
+   ['Coherence and Cohesion',['One central idea per body paragraph','Logical progression, not overused connectors (Firstly, Moreover…)','Conclusion restates your position without new ideas']],
+   ['Lexical Resource',['Topic vocabulary: tuition fees, public funding, access, graduate debt','Precise word choice, accurate collocations, correct spelling']],
+   ['Grammatical Range and Accuracy',['Conditionals, relative clauses and passives used correctly','Most sentences error-free; punctuation is accurate']]]}
+};
+let task=1;const wT=Timer($('#wTimer'),1200,()=>{$('#wStart').textContent='Time is up'});
+function words(t){return(t.trim().match(/\S+/g)||[]).length}
+function showTask(n){
+  const cur=$('#wText').value;store.set('ielts-w'+task,cur);task=n;const T=TASKS[n];
+  $('#wTitle').textContent=T.title;$('#wSub').textContent=T.sub;$('#wPrompt').innerHTML=T.html;
+  $('#wText').value=store.get('ielts-w'+n)||'';updateWC();
+  $('#wCrit').innerHTML=T.crit.map(([h,l])=>`<div><h4>${h}</h4><ul>${l.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('');
+  $('#wT1').classList.toggle('primary',n===1);$('#wT2').classList.toggle('primary',n===2);
+  wT.reset(T.secs);$('#wStart').textContent='Start timer';
+}
+function updateWC(){const n=words($('#wText').value),min=TASKS[task].min;$('#wCount').innerHTML=`Words: <b>${n}</b> / ${min} minimum`;$('#wCount').className=n<min?'under':''}
+$('#wText').addEventListener('input',()=>{updateWC();store.set('ielts-w'+task,$('#wText').value)});
+$('#wT1').onclick=()=>showTask(1);$('#wT2').onclick=()=>showTask(2);
+$('#wStart').onclick=()=>{if(wT.running){wT.stop();$('#wStart').textContent='Resume timer'}else{wT.start();$('#wStart').textContent='Pause timer'}};
+$('#wText').value=store.get('ielts-w1')||'';showTask(1);
+
+/* ---------- Speaking ---------- */
+let sPhase=0;
+const sT=Timer($('#sTimer'),60,()=>{
+  if(sPhase===1){sPhase=2;sT.reset(120);sT.start();$('#sNote').textContent='Speak now. Keep going until the timer ends; the examiner will stop you at two minutes.';$('#sStart').textContent='Speaking…'}
+  else{sPhase=0;$('#sNote').textContent='Time. In the real test the examiner may ask one or two short follow-up questions.';$('#sStart').textContent='Start 1 min preparation';$('#sStart').disabled=false}
+});
+$('#sStart').onclick=()=>{sPhase=1;sT.reset(60);sT.start();$('#sStart').disabled=true;$('#sStart').textContent='Preparing…';$('#sNote').textContent='Make brief notes on each bullet point.'};
+$('#sReset').onclick=()=>{sPhase=0;sT.reset(60);$('#sStart').disabled=false;$('#sStart').textContent='Start 1 min preparation';$('#sNote').textContent='You get one minute to make notes, then speak for up to two minutes. The timer switches over by itself.'};
+
+/* ---------- Progress ---------- */
+const SECS=[['listening','Listening'],['reading','Reading'],['writing','Writing'],['speaking','Speaking']];
+const WLES={ta:'w1-structure',cc:'w2-paragraph',lr:'v-topics',gra:'g-complex'},SLES={fc:'s-extend',lr:'v-topics',gra:'g-errors',p:'s-parts'};
+const WCRIT=[['ta','Task achievement / response','Task 1: open with a clear overview of the main trends. Task 2: state your position in the introduction and keep to it.'],
+ ['cc','Coherence and cohesion','One central idea per paragraph. Use linking words accurately, not at the start of every sentence.'],
+ ['lr','Lexical resource','Paraphrase the question, learn topic collocations, and check spelling.'],
+ ['gra','Grammatical range and accuracy','Practise relative clauses, conditionals and passives, and proofread for articles and agreement.']];
+const SCRIT=[['fc','Fluency and coherence','Do a timed two-minute Part 2 talk every day. Use phrases like "Let me think" instead of silence.'],
+ ['lr','Lexical resource','Prepare topic words for common themes (work, study, hometown, technology) and use them naturally.'],
+ ['gra','Grammatical range and accuracy','Mix past, present and future forms, and record yourself to catch repeated errors.'],
+ ['p','Pronunciation','Shadow short clips of native speech, copying the word stress and intonation.']];
+const LKEY='ielts-attempts';
+let ATTEMPTS=[],STORE={mode:'local',col:null};
+const loadLocal=()=>{try{return JSON.parse(localStorage.getItem(LKEY)||'[]')}catch(e){return[]}};
+const saveLocal=a=>{try{localStorage.setItem(LKEY,JSON.stringify(a))}catch(e){}};
+function setStoreNote(){$('#pgStore').textContent=STORE.mode==='db'?'Saved privately to your account, so your history is here on any device where you open this page.':'Saved in this browser only. Clearing your browser data will erase it.'}
+async function initStore(){
+  ATTEMPTS=loadLocal();setStoreNote();renderProgress();
+  const c=window.claude;if(!c||!c.use)return;
+  let db,user;try{[db,user]=await Promise.all([c.use('db'),c.use('user')])}catch(e){return}
+  if(!db||!user)return;let uid=null;try{uid=await user.id()}catch(e){}
+  if(!uid)return;
+  const col=db.doc('data/users/'+uid+'/progress').collection('attempts');
+  STORE={mode:'db',col};setStoreNote();
+  learnDoc=db.doc('data/users/'+uid+'/learning');
+  learnDoc.onSnapshot(snap=>{const d=snap.exists?(snap.data().done||{}):null;
+    if(d===null){const loc=loadLearnLocal();if(Object.keys(loc).length)learnDoc.set({done:loc}).then(()=>{try{localStorage.removeItem(LLKEY)}catch(e){}}).catch(()=>{});return}
+    LEARNED={...d};renderLearn();renderProgress()},()=>{learnDoc=null});
+  col.onSnapshot(snap=>{ATTEMPTS=snap.docs.map(d=>({...d.data(),id:d.id}));renderProgress()},
+    ()=>{STORE={mode:'local',col:null};ATTEMPTS=loadLocal();setStoreNote();renderProgress()});
+  const local=loadLocal();
+  if(local.length){let all=true;for(const a of local){try{await col.doc(a.id).set(a)}catch(e){all=false;break}}if(all)try{localStorage.removeItem(LKEY)}catch(e){}}
+}
+async function saveAttempt(a,at){
+  a.id='a'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);a.at=at||new Date().toISOString();
+  if(STORE.mode==='db'){try{await STORE.col.doc(a.id).set(a);return true}catch(e){if(e&&e.code==='quota_exceeded')return false}}
+  const l=loadLocal();l.push(a);saveLocal(l);if(STORE.mode!=='db'){ATTEMPTS=l;renderProgress()}return true;
+}
+async function clearHistory(){
+  if(STORE.mode==='db'){for(const a of ATTEMPTS){try{await STORE.col.doc(a.id).delete()}catch(e){}}}
+  try{localStorage.removeItem(LKEY)}catch(e){}if(STORE.mode!=='db'){ATTEMPTS=[];renderProgress()}
+}
+function resultNote(out,html){const r=out.querySelector('.result');if(!r)return;let p=r.querySelector('.saved');if(!p){p=document.createElement('p');p.className='saved';r.appendChild(p)}p.innerHTML=html}
+const fmtDate=iso=>{const d=new Date(iso);return d.toLocaleDateString(undefined,{day:'numeric',month:'short'})};
+const half=x=>Math.round(x*2)/2;
+const LESSON_FOR={tfng:'r-paraphrase',info:'r-paraphrase',sent:'r-paraphrase',ynng:'r-paraphrase',headings:'r-time',table:'l-spell',mcq:'l-traps',short:'r-paraphrase',summary:'r-paraphrase'};
+const lessonLink=id=>{const l=typeof LESSONS!=='undefined'&&LESSONS.find(x=>x.id===id);return l?` <a href="#learn" data-lesson="${l.id}">Lesson: ${l.title}</a>`:''};
+const tname=id=>(STRAT.find(x=>x.id===id)||{name:id}).name;
+
+function lineChart(A){
+  const W=760,H=260,L=36,R=740,T=16,B=220,lo=3,hi=9;
+  const xs=i=>A.length===1?(L+R)/2:L+i*(R-L)/(A.length-1), ys=v=>B-(Math.max(lo,Math.min(hi,v))-lo)/(hi-lo)*(B-T);
+  let g='';for(let v=lo;v<=hi;v++){g+=`<line class="grid" x1="${L}" x2="${R}" y1="${ys(v)}" y2="${ys(v)}"/><text x="${L-8}" y="${ys(v)+4}" text-anchor="end">${v}</text>`}
+  let lines='';
+  SECS.forEach(([k])=>{const pts=A.map((a,i)=>[a,i]).filter(([a])=>a.section===k).map(([a,i])=>[xs(i),ys(a.band),a.external]);if(!pts.length)return;
+    if(pts.length>1)lines+=`<polyline class="ln" stroke="var(--c-${k})" points="${pts.map(p=>p[0]+','+p[1]).join(' ')}"/>`;
+    lines+=pts.map(p=>p[2]?`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="var(--bg)" stroke="var(--c-${k})" stroke-width="2"/>`:`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="var(--c-${k})" stroke="var(--bg)" stroke-width="2"/>`).join('')});
+  const lab=A.length===1?[0]:[0,A.length-1];
+  const xl=lab.map(i=>`<text x="${xs(i)}" y="${B+20}" text-anchor="${A.length===1?'middle':i===0?'start':'end'}">${fmtDate(A[i].at)}</text>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Band score over time for each section">${g}${lines}${xl}</svg>`;
+}
+function avgCrit(list,keys){const out={};keys.forEach(([k])=>{const v=list.map(a=>a.crit&&a.crit[k]).filter(x=>typeof x==='number');out[k]=v.length?v.reduce((a,b)=>a+b,0)/v.length:null});return out}
+
+function learnBlock(){if(typeof LESSONS==='undefined')return'';const n=LESSONS.filter(l=>LEARNED[l.id]).length;const nxt=LESSONS.find(l=>!LEARNED[l.id]);
+  return `<div class="pg-block"><h2>Lessons</h2><p class="small">${n} of ${LESSONS.length} learned.</p><div class="acc">${MODULES.map(m=>{const ls=LESSONS.filter(l=>l.mod===m.id),d=ls.filter(l=>LEARNED[l.id]).length;return `<div class="ar" style="grid-template-columns:minmax(0,220px) minmax(0,1fr) auto"><div class="nm">${m.name}</div><div class="bar"><i style="width:${Math.round(d/ls.length*100)}%;background:var(--ok)"></i></div><div class="pc" style="min-width:48px">${d}/${ls.length}</div></div>`}).join('')}</div>${nxt?`<p class="small" style="margin-top:12px">Next up: <a href="#learn" data-lesson="${nxt.id}">${nxt.title}</a></p>`:''}</div>`}
+function renderProgress(){
+  const el=$('#pgBody');if(!el)return;
+  const A=[...ATTEMPTS].sort((a,b)=>a.at<b.at?-1:1);
+  if(!A.length){el.innerHTML=`<div class="empty"><h2>No attempts yet</h2><p>Do any section and mark it, or rate your Writing or Speaking. Or log a real test from a Cambridge book above. Your score shows up here, and the trend appears from your second attempt.</p><button class="primary" onclick="location.hash='listening'">Start with Listening</button></div>`;return}
+  const by=Object.fromEntries(SECS.map(([k])=>[k,A.filter(a=>a.section===k)]));
+  const cards=SECS.map(([k,n])=>{const Ls=by[k],last=Ls[Ls.length-1],prev=Ls[Ls.length-2];let d='Not tried yet';
+    if(last&&prev){const x=last.band-prev.band;d=x>0?`<span class="up">Up ${x.toFixed(1)} since last time</span>`:x<0?`<span class="down">Down ${Math.abs(x).toFixed(1)} since last time</span>`:'Same as last time'}else if(last)d='First attempt';
+    return `<div class="sc"><div class="sc-n"><i style="--c:var(--c-${k})"></i>${n}</div><div class="sc-b">${last?last.band.toFixed(1):'–'}</div><div class="sc-d">${d}</div><div class="sc-c">${Ls.length} attempt${Ls.length===1?'':'s'}</div></div>`}).join('');
+  const lasts=SECS.map(([k])=>by[k].length?by[k][by[k].length-1].band:null);
+  const overall=lasts.every(x=>x!==null)?`<b>${half(lasts.reduce((a,b)=>a+b,0)/4).toFixed(1)}</b><span>Estimated overall band, from your latest score in each section.</span>`:`<span>Complete all four sections to see an estimated overall band. Missing: ${SECS.filter((_,i)=>lasts[i]===null).map(x=>x[1]).join(', ')}.</span>`;
+
+  const real=A.filter(a=>a.external);
+  let cmp='';if(real.length){const rows=SECS.map(([k,n])=>{const r=real.filter(a=>a.section===k),p=A.filter(a=>a.section===k&&!a.external);if(!r.length)return'';
+    const rb=r[r.length-1].band,pb=p.length?p[p.length-1].band:null;return `<div class="ar" style="grid-template-columns:minmax(0,1fr) auto"><div class="nm">${n}<small>Latest real test: ${r[r.length-1].source}</small></div><div class="pc">${rb.toFixed(1)}${pb!==null?` <span style="opacity:.7">· practice ${pb.toFixed(1)}</span>`:''}</div></div>`}).join('');
+    cmp=`<div class="pg-block"><h2>Real tests vs practice</h2><p class="small">Your real-test band is the better guide to your exam result. A big gap usually means you remember the practice answers.</p><div class="acc">${rows}</div></div>`}
+  // question-type accuracy
+  const acc={};A.filter(a=>a.byType).forEach(a=>Object.entries(a.byType).forEach(([k,[c,t]])=>{acc[k]=acc[k]||{c:0,t:0,last:null};acc[k].c+=c;acc[k].t+=t;acc[k].last=[c,t]}));
+  const accRows=Object.entries(acc).map(([k,v])=>({k,...v,p:v.c/v.t})).sort((a,b)=>a.p-b.p);
+  const accHtml=accRows.length?accRows.map(r=>{const weak=r.p<0.7;const sec=STRAT.find(x=>x.id===r.k);return `<div class="ar${weak?' weak':''}"><div class="nm">${tname(r.k)}${weak?'<span class="tag">Needs work</span>':''}<small>${sec&&sec.in?sec.in+' · ':''}last time ${r.last[0]}/${r.last[1]}</small></div><div class="bar"><i style="width:${Math.round(r.p*100)}%"></i></div><div class="pc">${r.c}/${r.t} · ${Math.round(r.p*100)}%</div></div>`}).join(''):'<p class="small">Mark a Listening or Reading attempt to see this.</p>';
+
+  // criteria
+  const critBlock=(list,keys,label)=>{if(!list.length)return `<div><h3>${label}</h3><p class="small">Rate an attempt to see this.</p></div>`;
+    const av=avgCrit(list.slice(-3),keys);const vals=keys.map(([k])=>av[k]).filter(v=>v!==null);const min=Math.min(...vals);
+    return `<div><h3>${label}</h3><div class="acc">${keys.map(([k,n])=>{const v=av[k];const weak=v!==null&&v===min&&vals.some(x=>x>min);return `<div class="ar${weak?' weak':''}" style="grid-template-columns:minmax(0,1fr) 90px auto"><div class="nm">${n}${weak?'<span class="tag">Lowest</span>':''}</div><div class="bar"><i style="width:${v===null?0:Math.round(v/9*100)}%"></i></div><div class="pc" style="min-width:36px">${v===null?'–':half(v).toFixed(1)}</div></div>`}).join('')}</div><p class="small" style="margin-top:8px">Average of your last ${Math.min(3,list.length)} rated attempt${list.length===1?'':'s'}.</p></div>`};
+
+  // focus list
+  const focus=[];
+  accRows.filter(r=>r.p<0.7).slice(0,3).forEach(r=>{const st=STRAT.find(x=>x.id===r.k);if(!st)return;
+    focus.push({h:`${st.name}: ${Math.round(r.p*100)}% correct`,p:st.traps[0]+(LESSON_FOR[r.k]?lessonLink(LESSON_FOR[r.k]):''),go:`<button class="strat-link go" data-s="${st.id}">Review the strategy</button>`})});
+  const flag={};A.forEach(a=>(a.struggled||[]).forEach(t=>flag[t]=(flag[t]||0)+1));
+  Object.entries(flag).sort((a,b)=>b[1]-a[1]).slice(0,2).forEach(([t,n])=>{const st=STRAT.find(x=>x.id===t);if(!st||focus.some(f=>f.h.startsWith(st.name)))return;
+    focus.unshift({h:`${st.name}: flagged in ${n} real test${n===1?'':'s'}`,p:st.steps[2]||st.traps[0],go:`<button class="strat-link go" data-s="${st.id}">Review the strategy</button>`})});
+  [['writing',WCRIT,'Writing'],['speaking',SCRIT,'Speaking']].forEach(([k,keys,n])=>{const list=by[k];if(!list.length)return;const av=avgCrit(list.slice(-3),keys);
+    const ent=keys.filter(([c])=>av[c]!==null).sort((a,b)=>av[a[0]]-av[b[0]])[0];if(!ent)return;
+    focus.push({h:`${n}: ${ent[1]} is your lowest (${half(av[ent[0]]).toFixed(1)})`,p:ent[2]+lessonLink((k==='writing'?WLES:SLES)[ent[0]]),go:`<a class="go" href="#${k}">Practise ${n.toLowerCase()}</a>`})});
+  const rd=by.reading.filter(a=>a.mins);if(rd.length&&rd[rd.length-1].mins>=19)focus.push({h:'Reading: you used nearly all your time',p:'Skim the passage first, and answer Matching Information last. Don\'t get stuck on one question.',go:`<button class="strat-link go" data-s="info">Timing tips</button>`});
+  SECS.forEach(([k,n])=>{const L=by[k];if(L.length>=3){const l3=L.slice(-3).map(a=>a.band);if(l3[2]<=l3[0])focus.push({h:`${n} has not improved in your last 3 attempts`,p:'Repeating the same test stops showing real progress. Go back over the questions you missed and the strategy for each one, rather than retaking straight away.',go:`<a class="go" href="#${k}">Open ${n}</a>`})}});
+  SECS.forEach(([k,n])=>{if(!by[k].length)focus.push({h:`Try ${n}`,p:`You haven't done any ${n} yet, so your overall band is incomplete.`,go:`<a class="go" href="#${k}">Start ${n}</a>`})});
+  const focusHtml=focus.length?focus.slice(0,6).map(f=>`<div class="fi"><h3>${f.h}</h3><p>${f.p}</p>${f.go}</div>`).join(''):'<p class="small">Nothing urgent. Keep practising to confirm your scores are stable.</p>';
+
+  // history
+  const hist=[...A].reverse().slice(0,30).map(a=>{const n=(SECS.find(x=>x[0]===a.section)||[0,a.section])[1];
+    let res=a.total?`${a.score}/${a.total}`:a.external?'Band entered':(a.section==='writing'?`Task ${a.task}${a.words?' · '+a.words+' words':''}`:'Self-rated');
+    let det=a.source?`<span class="src">${a.source}</span>`:'';
+    if(!a.external){const m=a.missed&&a.missed.length?'Missed Q'+a.missed.join(', Q'):(a.total?'All correct':'');if(m)det+=(det?' · ':'')+m}
+    if(a.mins)det+=(det?' · ':'')+a.mins+' min';
+    return `<tr><td>${fmtDate(a.at)}</td><td><span class="sec"><i style="--c:var(--c-${a.section})"></i>${n}</span></td><td class="n">${res}</td><td class="n">${Number(a.band).toFixed(1)}</td><td class="small">${det}</td></tr>`}).join('');
+
+  el.innerHTML=`<div class="cards">${cards}</div><div class="overall">${overall}</div>
+  <div class="pg-block"><h2>What to work on next</h2><p class="small">Based on all your attempts so far.</p><div class="focus">${focusHtml}</div></div>
+  <div class="pg-block"><h2>Band over time</h2><p class="small">${SECS.map(([k,n])=>`<span style="white-space:nowrap"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c-${k});margin:0 6px 0 0"></span>${n}</span>`).join('&nbsp;&nbsp; ')}</p><div class="lc">${lineChart(A)}</div><p class="small">Filled dots are practice tests on this site. Hollow dots are tests you logged from a book or official site.</p></div>
+  ${cmp}
+  <div class="pg-block"><h2>Accuracy by question type</h2><p class="small">Weakest first. Anything under 70% is marked.</p><div class="acc">${accHtml}</div></div>
+  <div class="pg-block"><h2>Writing and Speaking criteria</h2><p class="small">From your own ratings.</p><div class="crit-cols">${critBlock(by.writing,WCRIT,'Writing')}${critBlock(by.speaking,SCRIT,'Speaking')}</div></div>
+  ${learnBlock()}
+  <div class="pg-block"><h2>History</h2><div class="tablewrap"><table class="hist"><thead><tr><th>Date</th><th>Section</th><th>Result</th><th>Band</th><th>Details</th></tr></thead><tbody>${hist}</tbody></table></div>
+  <div style="margin-top:16px"><button id="clearBtn">Clear history</button><span class="msg" id="clearMsg"></span></div></div>`;
+  const cb=$('#clearBtn');let armed=false;cb.onclick=async()=>{if(!armed){armed=true;cb.textContent='Yes, delete everything';cb.classList.add('danger');$('#clearMsg').textContent='This cannot be undone.';return}
+    cb.disabled=true;await clearHistory();};
+}
+
+const MODULES=[{"id": "start", "name": "Getting started"}, {"id": "listen", "name": "Listening"}, {"id": "read", "name": "Reading"}, {"id": "w1", "name": "Writing Task 1"}, {"id": "w2", "name": "Writing Task 2"}, {"id": "speak", "name": "Speaking"}, {"id": "lang", "name": "Grammar and vocabulary"}];
+const LESSONS=[{"id": "format", "mod": "start", "title": "How the test works and how it is scored", "mins": 6, "body": "\n<p>IELTS has four parts. Listening, Reading and Writing are taken together on the same day. Speaking is a face-to-face interview, sometimes on a different day.</p>\n<div class=\"lt\"><table>\n<tr><th>Section</th><th>Time</th><th>What you do</th></tr>\n<tr><td>Listening</td><td>About 30 min</td><td>4 recordings, 40 questions. Each recording is played once.</td></tr>\n<tr><td>Reading</td><td>60 min</td><td>3 passages, 40 questions. There is no extra time to transfer answers.</td></tr>\n<tr><td>Writing</td><td>60 min</td><td>Task 1 (150+ words, about 20 min) and Task 2 (250+ words, about 40 min).</td></tr>\n<tr><td>Speaking</td><td>11–14 min</td><td>Part 1 interview, Part 2 two-minute talk, Part 3 discussion.</td></tr>\n</table></div>\n<h3>How bands are calculated</h3>\n<p>Listening and Reading give a raw score out of 40, which is converted to a band from 0 to 9. A raw score of about 30 is usually a band 7 in both.</p>\n<p>Writing and Speaking are marked on four criteria each, and the criteria count equally. In Writing, Task 2 is worth twice as much as Task 1, so it deserves the extra time.</p>\n<p>Your overall band is the average of the four sections, rounded to the nearest half band. An average ending in .25 rounds up to .5, and one ending in .75 rounds up to the next whole band. For example, 6.5 + 6.5 + 5.5 + 7.0 = 25.5, divided by 4 is 6.375, which rounds to 6.5.</p>\n<div class=\"callout\"><b>What this means for you:</b> one weak section pulls your overall band down. If a university or visa needs \"7.0 with no band below 6.5\", check each section, not just the average.</div>\n", "quiz": [{"q": "Which Writing task is worth more marks?", "o": ["Task 1", "Task 2", "They are equal"], "a": 1, "w": "Task 2 counts for twice as much as Task 1."}, {"q": "Section bands of 7.0, 6.5, 6.5 and 6.0 give an average of 6.5. What is the overall band?", "o": ["6.0", "6.5", "7.0"], "a": 1, "w": "The average is exactly 6.5, so no rounding is needed."}, {"q": "In Reading, when do you transfer your answers?", "o": ["During an extra 10 minutes at the end", "Within the 60 minutes", "After the Writing test"], "a": 1, "w": "Reading gives no extra transfer time, unlike paper-based Listening."}]}, {"id": "l-predict", "mod": "listen", "title": "Predict the answer before you listen", "mins": 7, "body": "\n<p>Most of your listening score is decided before the audio starts. You get a short time to read each set of questions. Use it to predict what kind of answer goes in each gap.</p>\n<h3>Three things to predict</h3>\n<ol>\n<li><b>Word type.</b> Is the gap a noun, a number, a date, an adjective? In \"Students must bring a ____\", the gap is a noun after \"a\".</li>\n<li><b>Meaning.</b> What sort of thing makes sense? Something a student brings: a notebook, a pen, a dictionary.</li>\n<li><b>Form.</b> Singular or plural? A price with £ or a time with am or pm?</li>\n</ol>\n<h3>Underline the words that will be paraphrased</h3>\n<p>The recording rarely uses the question's exact words. If a question says \"cost\", listen for \"fee\", \"price\" or \"you pay\". If it says \"start\", listen for \"begin\" or \"the first session is\".</p>\n<div class=\"callout\"><b>Try it:</b> before you replay Listening Part 1 on this site, write your predicted word type next to each of questions 1–6. Then compare after marking.</div>\n<h3>Keep your place</h3>\n<p>Questions follow the order of the recording. If you miss one, leave it and move on immediately, or you will miss the next two as well. Come back to guess at the end.</p>\n", "quiz": [{"q": "\"The course starts on the ____ of November.\" What should you predict?", "o": ["A day of the week", "A number (date)", "A person's name"], "a": 1, "w": "\"the ____ of November\" needs a date number, such as 9th."}, {"q": "You miss an answer while listening. What should you do?", "o": ["Wait for the speaker to repeat it", "Move straight to the next question", "Ask for the recording to be replayed"], "a": 1, "w": "Recordings play once and follow question order. Moving on protects the next answers."}]}, {"id": "l-traps", "mod": "listen", "title": "Distractors, corrections and signpost words", "mins": 8, "body": "\n<p>Listening questions are designed to tempt you with wrong answers that you really do hear. These are called distractors.</p>\n<h3>The four most common tricks</h3>\n<ul>\n<li><b>Self-correction.</b> \"It's on Tuesday... sorry, no, Thursday.\" The second answer is correct.</li>\n<li><b>Changed plans.</b> \"We used to do it online, but now it's in person.\" The old option is a trap.</li>\n<li><b>Two prices or numbers.</b> \"The full fee is £240, but if you pay early it's £210.\" Read the question to see which one it asks for.</li>\n<li><b>Mentioned but rejected.</b> \"There's no parking, so most people take the bus.\" Car is mentioned, but bus is the answer.</li>\n</ul>\n<h3>Signpost words tell you what is coming</h3>\n<div class=\"lt\"><table>\n<tr><th>Signal</th><th>What it means</th></tr>\n<tr><td>but, however, actually</td><td>The answer is probably coming next, often a change.</td></tr>\n<tr><td>sorry, I mean, no wait</td><td>A correction. Cross out what you just wrote.</td></tr>\n<tr><td>first, next, after that, finally</td><td>A sequence, often used in Part 2 maps and processes.</td></tr>\n<tr><td>the main reason, most importantly</td><td>Key point, common in Part 3 and Part 4 multiple choice.</td></tr>\n</table></div>\n<div class=\"callout\">Every distractor in Listening Test 1 on this site uses one of these tricks. Check the strategy notes after you mark it to see which.</div>\n", "quiz": [{"q": "\"Let's meet at the library. Actually, the café is better.\" Where will they meet?", "o": ["The library", "The café"], "a": 1, "w": "\"Actually\" signals a correction."}, {"q": "Which word most often signals that an answer is about to change?", "o": ["and", "but", "also"], "a": 1, "w": "\"But\" introduces contrast, which is where examiners hide corrections."}]}, {"id": "l-spell", "mod": "listen", "title": "Spelling, numbers and dates", "mins": 6, "body": "\n<p>A correct answer spelled wrongly scores zero. Spelling mistakes cost many candidates one or two Listening bands' worth of marks across a test.</p>\n<h3>Words you must be able to spell</h3>\n<p class=\"wl\">Wednesday, February, accommodation, environment, necessary, government, library, Saturday, schedule, receipt, questionnaire, separate, temperature, equipment, beginning, university, children, restaurant, opposite, available</p>\n<h3>Numbers</h3>\n<ul>\n<li>\"Oh\" means zero in phone numbers: \"oh seven nine\" is 079.</li>\n<li>\"Double three\" means 33.</li>\n<li>Listen for teens and tens: thirteen and thirty sound different in the stressed syllable (thir-TEEN, THIR-ty).</li>\n<li>Prices: write the number only if the £ sign is already printed in the question.</li>\n</ul>\n<h3>Dates</h3>\n<p>\"9 November\", \"9th November\" and \"November 9\" are all accepted. Write whatever is quickest, but match what the question already shows.</p>\n<h3>Letters</h3>\n<p>Names are often spelled out. Practise the letters that are easy to confuse when said aloud: A, E and I; G and J; B, P, V and D; M and N.</p>\n", "quiz": [{"q": "How is \"zero four double five\" written?", "o": ["0455", "04255", "0400 55"], "a": 0, "w": "\"Double five\" means 55."}, {"q": "Which is spelled correctly?", "o": ["accomodation", "accommodation", "acommodation"], "a": 1, "w": "Double c and double m."}]}, {"id": "r-paraphrase", "mod": "read", "title": "Paraphrase: the skill behind every question", "mins": 8, "body": "\n<p>Almost every Reading question tests one thing: can you see that two different sentences mean the same thing? The passage and the question almost never use the same words.</p>\n<h3>The three ways questions paraphrase</h3>\n<div class=\"lt\"><table>\n<tr><th>Method</th><th>Passage</th><th>Question</th></tr>\n<tr><td>Synonym</td><td>juvenile fish</td><td>young fish</td></tr>\n<tr><td>Word form</td><td>slows the decay</td><td>breaks down slowly</td></tr>\n<tr><td>Whole idea</td><td>dismissed as unproductive swamps</td><td>regarded as land of little use</td></tr>\n</table></div>\n<h3>Why this matters for True/False/Not Given</h3>\n<p>If you search for the exact words, you will either find nothing and wrongly choose Not Given, or find a matching word in the wrong sentence. Search for the <i>idea</i>, then read that sentence closely.</p>\n<h3>A daily exercise</h3>\n<ol>\n<li>Take one paragraph from a news article (BBC, The Guardian or New Scientist).</li>\n<li>Rewrite each sentence with different words, keeping the meaning exactly.</li>\n<li>Check that you haven't changed a qualifier like \"most\", \"some\" or \"often\".</li>\n</ol>\n<div class=\"callout\">Ten minutes of this a day improves Reading faster than doing more full tests.</div>\n", "quiz": [{"q": "Which is the best paraphrase of \"the number of visitors fell sharply\"?", "o": ["visitor numbers dropped significantly", "visitors were falling", "some visitors fell"], "a": 0, "w": "\"Dropped significantly\" keeps both the direction and the size of the change."}, {"q": "A statement says \"all\"; the passage says \"most\". What is the answer?", "o": ["TRUE", "FALSE", "NOT GIVEN"], "a": 1, "w": "\"Most\" contradicts \"all\", so the answer is FALSE."}]}, {"id": "r-time", "mod": "read", "title": "Managing 60 minutes across three passages", "mins": 5, "body": "\n<p>Passages get harder from 1 to 3, so don't split your time equally.</p>\n<div class=\"lt\"><table>\n<tr><th>Passage</th><th>Aim for</th></tr>\n<tr><td>Passage 1</td><td>17 minutes</td></tr>\n<tr><td>Passage 2</td><td>20 minutes</td></tr>\n<tr><td>Passage 3</td><td>23 minutes</td></tr>\n</table></div>\n<h3>Order of work inside a passage</h3>\n<ol>\n<li>Skim the passage in 2–3 minutes: title, first sentence of each paragraph, last paragraph.</li>\n<li>If there are Matching Headings, do them first. They give you the passage's map.</li>\n<li>Do gap-fill and True/False/Not Given next, in order.</li>\n<li>Do Matching Information last, when you know the passage best.</li>\n</ol>\n<h3>The 90-second rule</h3>\n<p>If a question takes more than about 90 seconds, guess, mark it, and move on. One stubborn question can cost you three easy ones.</p>\n<p>See the Strategies tab for a step-by-step method for each question type.</p>\n", "quiz": [{"q": "Which passage should get the most time?", "o": ["Passage 1", "Passage 2", "Passage 3"], "a": 2, "w": "Passages get harder, so Passage 3 deserves the most time."}, {"q": "When should you usually do Matching Information questions?", "o": ["First", "Last", "Skip them"], "a": 1, "w": "Leave them until you know the passage well."}]}, {"id": "w1-structure", "mod": "w1", "title": "The four-paragraph Task 1 structure", "mins": 7, "body": "\n<p>A clear structure gets you most of the way to a good Task Achievement and Coherence score. Use the same four paragraphs every time.</p>\n<ol>\n<li><b>Introduction (1 sentence).</b> Paraphrase the question. Say what the chart shows, where and when. Don't copy the question word for word.</li>\n<li><b>Overview (2 sentences).</b> The two or three most important patterns, with no numbers. This is the single most important paragraph. Without it, Task Achievement is usually capped at band 5.</li>\n<li><b>Body 1.</b> Details supporting your first overview point, with figures.</li>\n<li><b>Body 2.</b> Details supporting your second point, with figures.</li>\n</ol>\n<h3>How to find the overview</h3>\n<p>Ask yourself four questions: What went up or down overall? What was biggest and smallest? What changed the most? Are there any exceptions?</p>\n<h3>Things not to do</h3>\n<ul>\n<li>Don't give reasons or opinions. Describe only what the chart shows.</li>\n<li>Don't list every number. Choose the ones that support a comparison.</li>\n<li>Don't write a conclusion that repeats the overview. The overview already does that job.</li>\n</ul>\n", "quiz": [{"q": "Which paragraph matters most for Task Achievement?", "o": ["Introduction", "Overview", "Conclusion"], "a": 1, "w": "Without a clear overview, Task Achievement is usually limited to band 5."}, {"q": "Should you explain why a trend happened?", "o": ["Yes, it shows understanding", "No, only describe what the chart shows"], "a": 1, "w": "Task 1 reports data. Reasons not shown in the chart count against you."}]}, {"id": "w1-language", "mod": "w1", "title": "Language for trends and comparisons", "mins": 8, "body": "\n<h3>Describing change</h3>\n<div class=\"lt\"><table>\n<tr><th>Size</th><th>Verbs</th><th>Nouns</th></tr>\n<tr><td>Up</td><td>rose, increased, grew, climbed</td><td>a rise, an increase, growth</td></tr>\n<tr><td>Down</td><td>fell, decreased, declined, dropped</td><td>a fall, a decrease, a decline</td></tr>\n<tr><td>No change</td><td>remained stable, stayed at, levelled off</td><td>a plateau</td></tr>\n<tr><td>Up and down</td><td>fluctuated</td><td>a fluctuation</td></tr>\n</table></div>\n<p>Add size and speed: <i>sharply, dramatically, significantly, steadily, gradually, slightly, marginally</i>.</p>\n<p>Two patterns to vary your sentences: \"Sales <b>rose sharply</b> to 60%\" and \"There was <b>a sharp rise</b> in sales, to 60%.\"</p>\n<h3>Using fractions and approximations</h3>\n<div class=\"lt\"><table>\n<tr><th>Figure</th><th>You can write</th></tr>\n<tr><td>24–26%</td><td>about a quarter</td></tr>\n<tr><td>32%</td><td>just under a third</td></tr>\n<tr><td>48%</td><td>almost half</td></tr>\n<tr><td>58%</td><td>just under three fifths</td></tr>\n<tr><td>76%</td><td>roughly three quarters</td></tr>\n</table></div>\n<h3>Comparing</h3>\n<ul>\n<li>A was <b>twice as high as</b> B. / A was <b>double</b> B.</li>\n<li>A was <b>considerably higher than</b> B.</li>\n<li>A <b>overtook</b> B in 2015.</li>\n<li>A rose to 91%, <b>whereas</b> D reached only 61%.</li>\n<li>A and C <b>followed a similar pattern</b>.</li>\n</ul>\n<div class=\"callout\">Prepositions matter: rose <b>to</b> 60% (the final level), rose <b>by</b> 20 percentage points (the size of the change), <b>from</b> 40% <b>to</b> 60%.</div>\n", "quiz": [{"q": "Sales went from 40% to 60%. Which is correct?", "o": ["Sales rose to 20%", "Sales rose by 20 percentage points", "Sales rose of 20%"], "a": 1, "w": "\"By\" gives the size of the change. \"To\" would need 60%."}, {"q": "Which describes 49% best?", "o": ["about a third", "almost half", "over half"], "a": 1, "w": "49% is just under half."}]}, {"id": "w1-model", "mod": "w1", "title": "Model answer: the internet access chart", "mins": 6, "body": "\n<p>This answers the Task 1 question in Writing on this site. Try the task yourself first, then compare.</p>\n<div class=\"model\">\n<p>The bar chart compares the proportion of households with internet access in four countries in 2005, 2015 and 2025.</p>\n<p>Overall, access rose in all four countries over the twenty-year period. Country C led in 2005, but by 2025 Country A had overtaken it, while Country D, despite remaining the lowest, saw the most dramatic growth in the final decade.</p>\n<p>In 2005, just under three fifths of households in Country C (58%) were connected, well ahead of Country A (32%). Access in Countries B and D was far more limited, at 15% and 8% respectively. Over the next ten years, the figures for A and B more than doubled, to 68% and 47%, whereas growth in C was more modest, reaching 79%.</p>\n<p>By 2025, Country A had the highest rate at 91%, narrowly ahead of C (88%) and B (83%). The figure for Country D climbed from 22% to 61%, almost tripling in a single decade, although it still trailed the other three countries by more than 20 percentage points.</p>\n</div>\n<h3>Why this would score well</h3>\n<ul>\n<li>The <b>overview</b> gives three clear patterns without numbers.</li>\n<li>The body paragraphs are grouped by <b>time</b>, which makes comparisons easy.</li>\n<li>Figures are <b>selected</b>, not listed, and each one supports a comparison.</li>\n<li>Vocabulary varies: <i>proportion, connected, access, figure, rate</i>; <i>rose, climbed, more than doubled, almost tripling</i>.</li>\n<li>About 190 words, comfortably over 150, without padding.</li>\n</ul>\n", "quiz": [{"q": "In the model, how are the two body paragraphs organised?", "o": ["By country", "By time period", "By size of change"], "a": 1, "w": "Paragraph 3 covers 2005–2015 and paragraph 4 covers 2025."}]}, {"id": "w2-types", "mod": "w2", "title": "The five Task 2 essay types", "mins": 9, "body": "\n<p>Identify the type first. Answering a different question from the one asked is the most common reason for a low Task Response score.</p>\n<div class=\"lt\"><table>\n<tr><th>Type</th><th>How the question ends</th><th>What you must do</th></tr>\n<tr><td>Opinion</td><td>To what extent do you agree or disagree?</td><td>State a clear position in the introduction and keep it to the end.</td></tr>\n<tr><td>Discussion</td><td>Discuss both views and give your opinion.</td><td>One paragraph for each view, then your opinion. It can be in the introduction and conclusion.</td></tr>\n<tr><td>Advantages and disadvantages</td><td>Do the advantages outweigh the disadvantages?</td><td>Cover both, then say which is stronger.</td></tr>\n<tr><td>Problem and solution</td><td>What problems does this cause? How can they be solved?</td><td>One paragraph of problems, one of matching solutions.</td></tr>\n<tr><td>Two-part question</td><td>Why is this happening? Is it positive?</td><td>Answer both questions fully, one per paragraph.</td></tr>\n</table></div>\n<h3>A reliable four-paragraph plan</h3>\n<ol>\n<li><b>Introduction:</b> paraphrase the topic, then state your answer or position.</li>\n<li><b>Body 1:</b> first main idea, explained and supported with an example.</li>\n<li><b>Body 2:</b> second main idea, explained and supported with an example.</li>\n<li><b>Conclusion:</b> restate your position in new words. Add no new ideas.</li>\n</ol>\n<h3>Example introduction (discussion essay)</h3>\n<div class=\"model\"><p>Whether university education should be paid for by the state or by students themselves is a divisive question. While there are reasonable arguments on both sides, I believe that tuition should be free, because the benefits of a highly educated population are shared by society as a whole.</p></div>\n", "quiz": [{"q": "\"Some people think X. Others think Y. Discuss both views and give your opinion.\" Which type is this?", "o": ["Opinion", "Discussion", "Two-part question"], "a": 1, "w": "\"Discuss both views\" makes it a discussion essay. You still need your own opinion."}, {"q": "Where should your position appear in an opinion essay?", "o": ["Only in the conclusion", "In the introduction and conclusion", "Nowhere; stay neutral"], "a": 1, "w": "State it early and keep it consistent."}]}, {"id": "w2-paragraph", "mod": "w2", "title": "Building a strong body paragraph", "mins": 7, "body": "\n<p>Examiners reward ideas that are developed, not just listed. Use the same four-step pattern in every body paragraph.</p>\n<ol>\n<li><b>Point.</b> One topic sentence that states the main idea.</li>\n<li><b>Explain.</b> Two sentences on why or how this is true.</li>\n<li><b>Example.</b> A specific, realistic example. It can be from a country, a type of person or general knowledge.</li>\n<li><b>Link.</b> Connect the idea back to the question.</li>\n</ol>\n<div class=\"model\"><p><b>The main argument for free university education is that it widens access to opportunity.</b> When tuition fees are high, talented students from low-income families are often forced to choose work over study, regardless of their ability. This means a country loses doctors, engineers and teachers it could otherwise have trained. <b>In Germany, for example,</b> public universities charge no tuition fees to most students, which makes a degree a realistic goal for families on modest incomes. <b>For this reason, free education benefits society, not only the individual student.</b></p></div>\n<h3>Check your paragraph</h3>\n<ul>\n<li>Does it contain only one main idea?</li>\n<li>Could a reader guess the main idea from the first sentence alone?</li>\n<li>Is the example specific (a place, a group, a situation), not just \"for example, many people\"?</li>\n</ul>\n", "quiz": [{"q": "What is wrong with two main ideas in one paragraph?", "o": ["Nothing; it shows range", "It weakens coherence and development", "It makes the essay too long"], "a": 1, "w": "One clear idea per paragraph is part of the Coherence and Cohesion criterion."}]}, {"id": "w2-linking", "mod": "w2", "title": "Linking words, used accurately", "mins": 6, "body": "\n<p>Linking words help coherence only when they are used accurately and naturally. Starting every sentence with \"Moreover\" or \"Furthermore\" is marked down as mechanical.</p>\n<div class=\"lt\"><table>\n<tr><th>Function</th><th>Options</th></tr>\n<tr><td>Adding</td><td>In addition, also, not only... but also</td></tr>\n<tr><td>Contrast</td><td>However, while, whereas, although, on the other hand</td></tr>\n<tr><td>Cause</td><td>because, since, as, due to + noun</td></tr>\n<tr><td>Result</td><td>As a result, therefore, this means that, consequently</td></tr>\n<tr><td>Example</td><td>For example, for instance, such as + noun</td></tr>\n<tr><td>Concession</td><td>Admittedly, it is true that... but</td></tr>\n</table></div>\n<h3>Common mistakes</h3>\n<ul>\n<li>\"<s>Although</s> it is expensive, but it is useful.\" Use <i>although</i> or <i>but</i>, not both.</li>\n<li>\"<s>Due to</s> it is expensive...\" Use <i>because</i> before a clause. <i>Due to</i> takes a noun: \"due to the cost\".</li>\n<li>\"On the other hand\" introduces the second side of an argument, not just any extra point.</li>\n</ul>\n<div class=\"callout\">Try using pronouns and reference words too: <i>this trend, these problems, such policies</i>. They link sentences without needing a connector at all.</div>\n", "quiz": [{"q": "Which sentence is correct?", "o": ["Although it rained, but we went out.", "Although it rained, we went out.", "Due to it rained, we stayed in."], "a": 1, "w": "\"Although\" already shows contrast, so \"but\" is not needed."}]}, {"id": "s-parts", "mod": "speak", "title": "What examiners want in each part", "mins": 7, "body": "\n<p>Speaking is marked on four criteria: Fluency and Coherence, Lexical Resource, Grammatical Range and Accuracy, and Pronunciation. The examiner is listening for all four throughout the test.</p>\n<div class=\"lt\"><table>\n<tr><th>Part</th><th>Length</th><th>What to aim for</th></tr>\n<tr><td>1. Interview</td><td>4–5 min</td><td>Natural answers of two or three sentences about familiar topics. Not one word, not a speech.</td></tr>\n<tr><td>2. Long turn</td><td>3–4 min</td><td>Speak for the full two minutes, covering every bullet point, in an organised way.</td></tr>\n<tr><td>3. Discussion</td><td>4–5 min</td><td>Abstract opinions with reasons, comparisons and examples. Talk about society, not only yourself.</td></tr>\n</table></div>\n<h3>Pronunciation is not about accent</h3>\n<p>A Nigerian, Indian or Scottish accent is not marked down. What counts is whether you are easy to understand: clear word stress, natural rhythm, and intonation that shows meaning.</p>\n<h3>Useful ways to buy time</h3>\n<ul>\n<li>\"That's an interesting question. Let me think...\"</li>\n<li>\"I've never really thought about that, but I'd say...\"</li>\n<li>\"It depends, really. On the one hand...\"</li>\n</ul>\n<p>These sound natural. Long silences or \"erm, erm\" do not.</p>\n", "quiz": [{"q": "Does having a strong local accent lower your Pronunciation score?", "o": ["Yes", "No, if you are easy to understand"], "a": 1, "w": "Examiners mark clarity and features like stress and intonation, not accent."}, {"q": "What kind of answer suits Part 1?", "o": ["One word", "Two or three sentences", "A two-minute speech"], "a": 1, "w": "Part 1 needs short, natural, extended answers."}]}, {"id": "s-extend", "mod": "speak", "title": "Extending answers and the Part 2 notes", "mins": 8, "body": "\n<h3>Parts 1 and 3: answer, reason, example</h3>\n<p>Give your answer, say why, then add an example or detail. This alone fixes most short, undeveloped answers.</p>\n<div class=\"model\"><p><b>Q: Do you prefer studying in the morning or evening?</b><br>I'm definitely a morning person. My mind is much clearer before lunch, so I can concentrate on difficult things like writing practice. In the evenings I'm usually too tired, so I just review vocabulary.</p></div>\n<h3>Part 3: add a contrast</h3>\n<p>For Part 3, add one more step: consider another side. \"Although some people argue that..., I think...\" This shows the range the examiner is looking for at band 7 and above.</p>\n<h3>Part 2: one minute of notes</h3>\n<ol>\n<li>Write one or two keywords for each bullet point. Don't write sentences.</li>\n<li>Add one extra idea: a feeling, a detail, or what you learned.</li>\n<li>Speak through the bullets in order, using your notes as signposts.</li>\n<li>If you finish early, describe your feelings in more detail or compare then and now.</li>\n</ol>\n<div class=\"callout\">Practise with the Part 2 timer on the Speaking tab. Record yourself, and count how long you speak before stopping. Aim for the full two minutes.</div>\n", "quiz": [{"q": "What is the simplest way to extend a short answer?", "o": ["Speak more slowly", "Answer, give a reason, add an example", "Repeat the question"], "a": 1, "w": "Answer, reason, example gives every answer substance."}]}, {"id": "g-complex", "mod": "lang", "title": "Complex sentences for band 7", "mins": 8, "body": "\n<p>To reach band 7 in Grammatical Range, you need a variety of complex structures, used mostly without errors. Five structures cover most needs.</p>\n<div class=\"lt\"><table>\n<tr><th>Structure</th><th>Example</th></tr>\n<tr><td>Relative clause</td><td>Students <b>who work part-time</b> often struggle to keep up.</td></tr>\n<tr><td>Conditional</td><td><b>If governments invested</b> in public transport, fewer people <b>would drive</b>.</td></tr>\n<tr><td>Passive</td><td>Thousands of hectares <b>have been cleared</b> for farming.</td></tr>\n<tr><td>Concession</td><td><b>Although</b> the cost is high, the long-term benefits are greater.</td></tr>\n<tr><td>Participle clause</td><td><b>Faced with rising fees</b>, many students choose to study abroad.</td></tr>\n</table></div>\n<h3>Accuracy beats complexity</h3>\n<p>A long sentence full of errors scores lower than a short correct one. Write complex sentences you are confident about, and check them in the last two minutes.</p>\n<div class=\"callout\">Practise by rewriting two simple sentences as one: \"Many people move to cities. They want jobs.\" becomes \"Many people move to cities because they want jobs\" or \"Many people, wanting better jobs, move to cities.\"</div>\n", "quiz": [{"q": "Which is a correct second conditional?", "o": ["If people would recycle, waste falls.", "If people recycled more, there would be less waste.", "If people recycle more, there would be less waste."], "a": 1, "w": "Second conditional: if + past simple, would + verb."}]}, {"id": "g-errors", "mod": "lang", "title": "Ten errors that cost marks", "mins": 7, "body": "\n<p>These are the errors examiners see most often. Check your writing for them before you finish.</p>\n<ol>\n<li><b>Articles.</b> \"<s>The</s> education is important\" should be \"Education is important\" for general ideas.</li>\n<li><b>Agreement.</b> \"The number of students <s>are</s> rising\" should be \"is rising\". The subject is \"number\".</li>\n<li><b>Uncountable nouns.</b> informations, advices, equipments, researches are all wrong. Use \"information\", \"advice\", \"equipment\", \"research\".</li>\n<li><b>People.</b> \"People <s>is</s>\" should be \"people are\".</li>\n<li><b>Tense in Task 1.</b> Past years need past tenses. Future years need \"is expected to\" or \"is projected to\".</li>\n<li><b>Comma splices.</b> \"Prices rose, <s>people</s> bought less\" needs \"so\" or a full stop.</li>\n<li><b>Prepositions.</b> Use \"in\" for the thing that changes and \"of\" for the amount: \"an increase <b>in</b> sales <b>of</b> 10%\", not \"an increase <s>of</s> sales\".</li>\n<li><b>Word form.</b> \"It has a big <s>affect</s>\" should be \"effect\" (noun). \"Affect\" is the verb.</li>\n<li><b>Informal words.</b> Avoid \"kids\", \"a lot of\", \"stuff\", \"gonna\" in Writing.</li>\n<li><b>Contractions.</b> Write \"do not\", not \"don't\", in Writing. Contractions are fine in Speaking.</li>\n</ol>\n", "quiz": [{"q": "Which is correct?", "o": ["The number of cars are increasing.", "The number of cars is increasing."], "a": 1, "w": "The subject is \"the number\", which is singular."}, {"q": "Which is correct?", "o": ["many informations", "much information", "many information"], "a": 1, "w": "\"Information\" is uncountable."}]}, {"id": "v-topics", "mod": "lang", "title": "Topic vocabulary and collocations", "mins": 10, "body": "\n<p>Lexical Resource rewards precise, natural word combinations (collocations) more than rare words. Learn words in pairs and phrases, not alone.</p>\n<div class=\"lt\"><table>\n<tr><th>Topic</th><th>Useful collocations</th></tr>\n<tr><td>Education</td><td>tuition fees, academic performance, lifelong learning, vocational training, access to higher education</td></tr>\n<tr><td>Environment</td><td>carbon emissions, renewable energy, natural habitats, climate change, deforestation</td></tr>\n<tr><td>Technology</td><td>digital literacy, online platforms, artificial intelligence, screen time, data privacy</td></tr>\n<tr><td>Health</td><td>balanced diet, sedentary lifestyle, public health campaigns, healthcare system, mental wellbeing</td></tr>\n<tr><td>Work</td><td>job security, work-life balance, remote working, career prospects, unemployment rate</td></tr>\n<tr><td>Cities</td><td>urban sprawl, public transport, traffic congestion, affordable housing, green spaces</td></tr>\n</table></div>\n<h3>How to learn vocabulary that sticks</h3>\n<ol>\n<li>When you read, note whole phrases, not single words.</li>\n<li>Write one sentence of your own with each new phrase.</li>\n<li>Review your list after one day, three days and one week.</li>\n<li>Use five new phrases in your next Writing or Speaking practice.</li>\n</ol>\n<div class=\"callout\">The Academic Word List is a well-known list of 570 word families that appear across academic texts. It is worth working through if your target is band 7 or higher.</div>\n", "quiz": [{"q": "Which collocation is natural?", "o": ["do a mistake", "make a mistake", "create a mistake"], "a": 1, "w": "In English we \"make\" mistakes."}, {"q": "Which is the most precise for Writing?", "o": ["a lot of pollution", "high levels of air pollution", "big pollution"], "a": 1, "w": "\"High levels of air pollution\" is precise and formal."}]}];
+const RESOURCES=[{"n": "IELTS Prepare hub (IDP)", "u": "https://ielts.idp.com/prepare", "d": "Searchable library of official guides, videos and practice by skill."}, {"n": "Free mock tests (IDP)", "u": "https://ielts.idp.com/prepare/ielts-practice-tests", "d": "Official computer-delivered practice tests for all four sections, with answer keys."}, {"n": "Free practice tests (British Council)", "u": "https://takeielts.britishcouncil.org/take-ielts/prepare/free-ielts-practice-tests", "d": "Academic and General Training practice for every skill, including a computer familiarisation test."}, {"n": "Writing Task 2 band descriptors", "u": "https://takeielts.britishcouncil.org/sites/default/files/IELTS_task_2_Writing_band_descriptors", "d": "The official criteria examiners use to mark your essays."}, {"n": "IELTS by IDP on YouTube", "u": "https://www.youtube.com/c/IELTSbyIDP/videos", "d": "Official videos and webinars with study tips."}, {"n": "BBC Learning English", "u": "https://www.bbc.co.uk/learningenglish", "d": "Free grammar, vocabulary and pronunciation lessons."}, {"n": "Academic Word List", "u": "https://www.wgtn.ac.nz/lals/resources/academicwordlist", "d": "The 570 most common word families in academic texts."}, {"n": "Write & Improve (Cambridge)", "u": "https://writeandimprove.com", "d": "Free automatic feedback on your writing."}];
+
+let LEARNED={},learnDoc=null;
+const LLKEY='ielts-learned';
+function loadLearnLocal(){try{return JSON.parse(localStorage.getItem(LLKEY)||'{}')}catch(e){return{}}}
+LEARNED=loadLearnLocal();
+async function setLearned(id,val){
+  const next={...LEARNED};if(val)next[id]=new Date().toISOString();else delete next[id];LEARNED=next;
+  if(learnDoc){try{await learnDoc.set({done:next});}catch(e){try{localStorage.setItem(LLKEY,JSON.stringify(next))}catch(_){}}}
+  else{try{localStorage.setItem(LLKEY,JSON.stringify(next))}catch(e){}}
+  renderLearn();renderProgress();
+}
+function renderLearn(){
+  const n=Object.keys(LEARNED).filter(k=>LESSONS.some(l=>l.id===k)).length;
+  $('#lprog').innerHTML=`<b>${n} / ${LESSONS.length}</b>lessons learned`;
+  $('#lmods').innerHTML=MODULES.map(m=>`<div class="lmod"><h2>${m.name}</h2>${LESSONS.filter(l=>l.mod===m.id).map(l=>`<button class="lrow${LEARNED[l.id]?' done':''}" data-lesson="${l.id}"><span class="ck" aria-hidden="true"></span><span class="t">${l.title}</span><span class="m">${l.mins} min</span></button>`).join('')}</div>`).join('');
+  $('#lres').innerHTML=RESOURCES.map(r=>`<a href="${r.u}" target="_blank" rel="noopener"><b>${r.n}</b><span>${r.d}</span></a>`).join('');
+  if(!$('#lesson').hidden&&$('#lesson').dataset.id)updateLessonFoot($('#lesson').dataset.id);
+}
+function updateLessonFoot(id){const b=$('#lDone');if(!b)return;const d=!!LEARNED[id];b.textContent=d?'Learned ✓ (undo)':'Mark as learned';b.classList.toggle('primary',!d)}
+function openLesson(id){
+  const i=LESSONS.findIndex(l=>l.id===id);if(i<0)return;const l=LESSONS[i],next=LESSONS[i+1];
+  if(location.hash!=='#learn')location.hash='learn';
+  const mod=MODULES.find(m=>m.id===l.mod).name;
+  const quiz=l.quiz.map((q,qi)=>`<div class="q" id="lqrow${qi}"><div class="num">${qi+1}</div><div><div class="qt">${q.q}</div><div class="opts stack">${q.o.map((o,oi)=>`<label class="opt"><input type="radio" name="lq${qi}" value="${oi}"><span>${o}</span></label>`).join('')}</div><div class="fb" hidden></div></div></div>`).join('');
+  const el=$('#lesson');el.dataset.id=id;
+  el.innerHTML=`<button class="back" id="lBack">← All lessons</button><div class="eyebrow">${mod} · ${l.mins} min</div><h1 style="margin:0 0 20px;font-size:28px;font-weight:600;letter-spacing:-.02em;line-height:1.2;text-wrap:balance">${l.title}</h1>
+   <div class="lbody">${l.body}</div>
+   <div class="quiz"><h2>Quick check</h2>${quiz}<div style="margin-top:12px"><button id="lqCheck">Check</button><span class="msg" id="lqMsg"></span></div></div>
+   <div class="lfoot"><button id="lDone"></button><span class="sp"></span>${next?`<button class="back" style="margin:0" data-lesson="${next.id}">Next: ${next.title} →</button>`:''}</div>`;
+  $('#learnHome').hidden=true;el.hidden=false;updateLessonFoot(id);window.scrollTo(0,0);
+  $('#lBack').onclick=()=>{el.hidden=true;$('#learnHome').hidden=false;el.dataset.id='';window.scrollTo(0,0)};
+  $('#lDone').onclick=()=>setLearned(id,!LEARNED[id]);
+  $('#lqCheck').onclick=()=>{let c=0;l.quiz.forEach((q,qi)=>{const ch=document.querySelector(`input[name="lq${qi}"]:checked`);const ok=ch&&+ch.value===q.a;if(ok)c++;
+    const row=$('#lqrow'+qi);row.classList.toggle('ok',!!ok);row.classList.toggle('bad',!ok);const fb=row.querySelector('.fb');fb.hidden=false;fb.innerHTML=`<b>${ok?'Correct':'Not quite'}.</b> ${q.w}`});
+    $('#lqMsg').textContent=c===l.quiz.length?'All correct. You can mark this lesson as learned.':`${c} of ${l.quiz.length} correct. Re-read the lesson and try again.`};
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-lesson]');if(b){e.preventDefault();openLesson(b.dataset.lesson)}});
+renderLearn();
+
+/* rating forms */
+function buildRate(grid,keys,pre){grid.innerHTML=keys.map(([k,n])=>`<label for="${pre}${k}">${n}<select id="${pre}${k}"><option value="">Choose</option>${[9,8.5,8,7.5,7,6.5,6,5.5,5,4.5,4].map(v=>`<option value="${v}">${v.toFixed(1)}</option>`).join('')}</select></label>`).join('')}
+buildRate($('#wRateGrid'),WCRIT,'wr-');buildRate($('#sRateGrid'),SCRIT,'sp-');
+function readRate(keys,pre){const c={};for(const[k]of keys){const v=document.getElementById(pre+k).value;if(!v)return null;c[k]=+v}return c}
+$('#wSave').onclick=async()=>{const c=readRate(WCRIT,'wr-');if(!c){$('#wMsg').textContent='Choose a band for all four criteria first.';return}
+  const b=half(Object.values(c).reduce((a,x)=>a+x,0)/4);const ok=await saveAttempt({section:'writing',task,band:b,crit:c,words:words($('#wText').value)});
+  $('#wMsg').innerHTML=ok?`Saved: Task ${task}, band ${b.toFixed(1)}. <a href="#progress">View progress</a>`:'Could not save. Try again.';
+  WCRIT.forEach(([k])=>document.getElementById('wr-'+k).value='')};
+$('#sSave').onclick=async()=>{const c=readRate(SCRIT,'sp-');if(!c){$('#sMsg').textContent='Choose a band for all four criteria first.';return}
+  const b=half(Object.values(c).reduce((a,x)=>a+x,0)/4);const ok=await saveAttempt({section:'speaking',band:b,crit:c});
+  $('#sMsg').innerHTML=ok?`Saved: band ${b.toFixed(1)}. <a href="#progress">View progress</a>`:'Could not save. Try again.';
+  SCRIT.forEach(([k])=>document.getElementById('sp-'+k).value='')};
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const GTBANDS=[[40,9],[39,8.5],[37,8],[36,7.5],[34,7],[32,6.5],[30,6],[27,5.5],[23,5],[19,4.5],[15,4],[12,3.5],[9,3],[6,2.5],[0,0]];
+(function(){
+  $('#lgBook').innerHTML=Array.from({length:19},(_,i)=>19-i).map(n=>`<option value="${n}">Cambridge ${n}</option>`).join('');
+  const bands='<option value="">Not done</option>'+[9,8.5,8,7.5,7,6.5,6,5.5,5,4.5,4,3.5,3].map(v=>`<option value="${v}">${v.toFixed(1)}</option>`).join('');
+  $('#lgW').innerHTML=bands;$('#lgS').innerHTML=bands;
+  const today=new Date();$('#lgDate').value=new Date(today.getTime()-today.getTimezoneOffset()*6e4).toISOString().slice(0,10);
+  $('#lgTypes').innerHTML=STRAT.map(t=>`<label class="opt"><input type="checkbox" value="${t.id}"><span>${t.name}</span></label>`).join('');
+  const syncSrc=()=>{const v=$('#lgSrc').value;$('#lgBookWrap').hidden=v!=='cam';$('#lgOtherWrap').hidden=v!=='other'};
+  $('#lgSrc').onchange=syncSrc;syncSrc();
+  const raw=id=>{const t=$(id).value.trim();if(t==='')return null;const n=Number(t);return Number.isInteger(n)&&n>=0&&n<=40?n:NaN};
+  const preview=()=>{const L=raw('#lgL'),R=raw('#lgR'),gt=$('#lgMod').value==='gt';
+    $('#lgLb').textContent=L===null?'':Number.isNaN(L)?'Enter 0–40':'Band '+band(L,40,LBANDS).toFixed(1);
+    $('#lgRb').textContent=R===null?'':Number.isNaN(R)?'Enter 0–40':'Band '+band(R,40,gt?GTBANDS:BANDS).toFixed(1)};
+  ['#lgL','#lgR'].forEach(i=>$(i).addEventListener('input',preview));$('#lgMod').onchange=preview;
+  $('#logForm').addEventListener('submit',async e=>{e.preventDefault();
+    const L=raw('#lgL'),R=raw('#lgR'),W=$('#lgW').value,S=$('#lgS').value,gt=$('#lgMod').value==='gt';
+    if(Number.isNaN(L)||Number.isNaN(R)){$('#lgMsg').textContent='Listening and Reading scores must be whole numbers from 0 to 40.';return}
+    if(L===null&&R===null&&!W&&!S){$('#lgMsg').textContent='Enter a score for at least one section.';return}
+    const v=$('#lgSrc').value;
+    const name=v==='cam'?`Cambridge ${$('#lgBook').value}, Test ${$('#lgTest').value}`:v==='org'?`ielts.org sample, Test ${$('#lgTest').value}`:v==='ready'?`IELTS Ready, Test ${$('#lgTest').value}`:((esc($('#lgOther').value.trim())||'Other test')+`, Test ${$('#lgTest').value}`);
+    const d=$('#lgDate').value;const at=d?new Date(d+'T12:00:00').toISOString():null;
+    const struggled=[...document.querySelectorAll('#lgTypes input:checked')].map(x=>x.value);
+    const base={source:name,external:true,module:gt?'General Training':'Academic'};
+    const items=[];
+    if(L!==null)items.push({...base,section:'listening',score:L,total:40,band:band(L,40,LBANDS)});
+    if(R!==null)items.push({...base,section:'reading',score:R,total:40,band:band(R,40,gt?GTBANDS:BANDS)});
+    if(W)items.push({...base,section:'writing',band:+W});
+    if(S)items.push({...base,section:'speaking',band:+S});
+    if(struggled.length)items[0].struggled=struggled;
+    $('#lgSave').disabled=true;let ok=true;
+    for(const it of items){if(!(await saveAttempt(it,at)))ok=false}
+    $('#lgSave').disabled=false;
+    if(ok){$('#lgMsg').textContent=`Saved ${name}.`;['#lgL','#lgR'].forEach(i=>$(i).value='');$('#lgW').value='';$('#lgS').value='';
+      document.querySelectorAll('#lgTypes input').forEach(x=>x.checked=false);preview()}
+    else $('#lgMsg').textContent='Some scores could not be saved. Try again.';
+  });
+})();
+initStore();
+
+/* ---------- Theme ---------- */
+const root=document.documentElement;
+const saved=store.get('ielts-theme'); if(saved==='dark'||saved==='light') root.setAttribute('data-theme',saved);
+$('#themeBtn').onclick=()=>{const cur=root.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  const next=cur==='dark'?'light':'dark';root.setAttribute('data-theme',next);store.set('ielts-theme',next)};
+
+/* ---------- Routing ---------- */
+function go(){const v=(location.hash.slice(1)||'listening');const ok=['progress','listening','reading','writing','speaking','learn','strategies'].includes(v)?v:'listening';
+  document.querySelectorAll('.view').forEach(s=>s.hidden=s.id!=='v-'+ok);
+  document.querySelectorAll('nav.tabs a').forEach(a=>{if(a.dataset.v===ok)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+  window.scrollTo(0,0)}
+window.addEventListener('hashchange',go);go();
+</script>
+
+</body>
+</html>
